@@ -41,14 +41,14 @@ namespace SemanticalAnalyzer
         {
 
             var dialog = new OpenFileDialog();
-            dialog.Filter = "All Files (*.*)|*.*";
+            dialog.Filter = "All Files (*.KAAS)|*.kaas";
             dialog.FilterIndex = 1;
             dialog.Multiselect = true;
-
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 var path = dialog.FileName;
+                
                 // string[] arrAllFiles = dialog.FileNames; //used when Multiselect = true           
 
                 // Open the stream and read it back.
@@ -96,8 +96,8 @@ namespace SemanticalAnalyzer
         private void BtnCompile_Click(object sender, EventArgs e)
         {
 
-            var evaluator = new Evaluator();
-            var diagnostics = evaluator.Evaluate(txtCode.Text);
+            var evaluator = new Evaluador();
+            var diagnostics = evaluator.Evaluar(txtCode.Text);
 
             foreach (var diagnostic in diagnostics)
             {
@@ -113,5 +113,49 @@ namespace SemanticalAnalyzer
                 splitContainer1.Panel2Collapsed = true;
             }
         }
+
+        private void ToolStripDropDownButton1_Click(object sender, EventArgs e)
+        {
+
+        }
+        //metodos para agregar el arbol de carpetas
+        private void PopulateTreeView()
+        {
+            TreeNode rootNode;
+
+            DirectoryInfo info = new DirectoryInfo(@"../..");
+            if (info.Exists)
+            {
+                rootNode = new TreeNode(info.Name);
+                rootNode.Tag = info;
+                GetDirectories(info.GetDirectories(), rootNode);
+                treeView1.Nodes.Add(rootNode);
+            }
+        }
+
+        private void GetDirectories(DirectoryInfo[] subDirs,
+            TreeNode nodeToAddTo)
+        {
+            TreeNode aNode;
+            DirectoryInfo[] subSubDirs;
+            foreach (DirectoryInfo subDir in subDirs)
+            {
+                aNode = new TreeNode(subDir.Name, 0, 0);
+                aNode.Tag = subDir;
+                aNode.ImageKey = "folder";
+                subSubDirs = subDir.GetDirectories();
+                if (subSubDirs.Length != 0)
+                {
+                    GetDirectories(subSubDirs, aNode);
+                }
+                nodeToAddTo.Nodes.Add(aNode);
+            }
+        }
+// evento del arbol
+        private void TreeView1_MouseClick(object sender, MouseEventArgs e)
+        {
+            
+        }
+
     }
 }

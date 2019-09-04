@@ -3,29 +3,29 @@ using System.Collections.Generic;
 
 namespace ExpressionEvaluator.CodeAnalysis
 {
-    public class SyntaxToken : SyntaxNode
+    public class Token : NodoSintaxis
     {
-        public SyntaxToken(SyntaxKind kind, int position, string text, object value)
+        public Token(TipoSintaxis kind, int position, string text, object value)
         {
-            Kind = kind;
+            Tipo = kind;
             Position = position;
             Text = text;
             Value = value;
         }
 
-        public override SyntaxKind Kind { get; }
+        public override TipoSintaxis Tipo { get; }
         public int Position { get; }
         public string Text { get; }
         public object Value { get; }
 
-        public override IEnumerable<SyntaxNode> GetChildren()
+        public override IEnumerable<NodoSintaxis> GetChildren()
         {
-            return Enumerable.Empty<SyntaxNode>();
+            return Enumerable.Empty<NodoSintaxis>();
         }
 
         public override string ToString()
         {
-            return $"[ Kind={Kind}, Position={Position}, Text={Text}, Value={Value} ]";
+            return $"[ Kind={Tipo}, Position={Position}, Text={Text}, Value={Value} ]";
         }
     }
 

@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace SemanticalAnalyzer.CodeAnalysis
 {
-    class WhileSyntax
+    class ExpresionWhile
     {
 
 
         // While OpenParenthesis Condition CloseParenthesis OpenCurlyBrackets Statements CloseCurlyBrackets
 
-        public SyntaxToken OpenParenthesisToken { get; }
-        public SyntaxToken CloseParenthesisToken { get; }
-        public SyntaxToken OpenCurlyBracketsToken { get; }
-        public ExpressionSyntax Expression { get; }
-        public SyntaxToken CloseCurlyBracketsToken { get; }
+        public Token OpenParenthesisToken { get; }
+        public Token CloseParenthesisToken { get; }
+        public Token OpenCurlyBracketsToken { get; }
+        public Expresion Expression { get; }
+        public Token CloseCurlyBracketsToken { get; }
     }
 }

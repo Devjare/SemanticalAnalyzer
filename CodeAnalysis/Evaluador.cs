@@ -1,0 +1,123 @@
+
+using System;
+using System.Collections.Generic;
+
+namespace ExpressionEvaluator.CodeAnalysis
+{
+    public class Evaluador
+    {
+        private readonly Expresion _raiz;
+
+        public Evaluador(Expresion raiz)
+        {
+            this._raiz = raiz;
+        }
+
+        public Evaluador()
+        {
+
+        }
+
+        //public double Evaluate()
+        //{
+            
+        //}
+
+        public List<String> Evaluar(String codigo)
+        {
+            var disgnostico = new List<String>();
+
+            var parser = new AnalizadorSintactico(codigo);
+            var arbol = parser.Analizar();
+
+            // Generate Symbols table
+            var TablaSimbolos = parser.TablaSimbolos;
+
+            foreach (var registro in TablaSimbolos)
+            {
+                Console.WriteLine($"Key: {registro.Key.ToString()}, Value: {registro.Value}");
+
+                if (registro.Key.Tipo == TipoSintaxis.IntegerKeyword ||
+                registro.Key.Tipo == TipoSintaxis.LongKeyword ||
+                registro.Key.Tipo == TipoSintaxis.FloatKeyword ||
+                registro.Key.Tipo == TipoSintaxis.DoubleKeyword)
+                {
+                    var result = EvaluarExpresionAritmetica(registro.Value);
+                    Console.WriteLine("Result arithmetic: " + result);
+                }
+                else
+                {
+                    var result = EvaluarExpresionLogica(registro.Value);
+                    Console.WriteLine("Logical result: " + result);
+                }
+
+            }
+
+            // tree.PrintList();
+
+            disgnostico.AddRange(parser.Diagnostics);
+
+            return disgnostico;
+        }
+
+        public double EvaluarExpresionAritmetica(Expresion nodo)
+        {
+            if (nodo is ExpresionEntera n)
+                return (int) n.Numero.Value;
+
+            if (nodo is ExpresionBinaria b)
+            {
+                var izquierda = EvaluarExpresionAritmetica(b.Izquierda);
+                var derecha = EvaluarExpresionAritmetica(b.Derecha);
+
+                if (b.Operador.Tipo == TipoSintaxis.TokenMas)
+                    return izquierda + derecha;
+                else if (b.Operador.Tipo == TipoSintaxis.TokenMenos)
+                    return izquierda - derecha;
+                else if (b.Operador.Tipo == TipoSintaxis.TokenMultiplicacion)
+                    return izquierda * derecha;
+                else if (b.Operador.Tipo == TipoSintaxis.TokenDivision)
+                    return izquierda / derecha;
+                else if (b.Operador.Tipo == TipoSintaxis.TokenPotencia)
+                    return Math.Pow(izquierda, derecha);
+                else if (b.Operador.Tipo == TipoSintaxis.TokenModulo)
+                    return izquierda % derecha;
+                else
+                    throw new Exception($"Operador binario inesperado: {b.Operador.Tipo}");
+            }
+
+            if (nodo is ExpresionEnParentesis p)
+                return EvaluarExpresionAritmetica(p.Expresion);
+
+            throw new Exception($"Nodo inesperado {nodo.Tipo}");
+        }
+
+        private bool EvaluarExpresionLogica(Expresion nodo)
+        {
+            if (nodo is ExpresionBool n)
+                return Boolean.Parse(n.TokenBool.Value.ToString());
+
+            if (nodo is ExpresionBinaria b)
+            {
+                var izquierda = EvaluarExpresionLogica(b.Izquierda);
+                var derecha = EvaluarExpresionLogica(b.Derecha);
+
+                if (b.Operador.Tipo == TipoSintaxis.TokenAnd)
+                    return izquierda && derecha;
+                else if (b.Operador.Tipo == TipoSintaxis.TokenOr)
+                    return izquierda || derecha;
+                else if (b.Operador.Tipo == TipoSintaxis.TokenIgualIgual)
+                    return izquierda == derecha;
+                else if (b.Operador.Tipo == TipoSintaxis.TokenNotIgual)
+                    return izquierda != derecha;
+                else
+                    throw new Exception($"Operador binario inesperado: {b.Operador.Tipo}");
+            }
+
+            if (nodo is ExpresionEnParentesis p)
+                return EvaluarExpresionLogica(p.Expresion);
+
+            throw new Exception($"Nodo inesperado {nodo.Tipo}");
+        }
+    }
+} 

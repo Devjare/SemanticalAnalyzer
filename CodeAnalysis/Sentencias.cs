@@ -11,22 +11,22 @@ namespace SemanticalAnalyzer.CodeAnalysis
     /// This class represents the main root of the complete source coe
     /// it is a class containing only the list of the rest of statements. ie. the root.
     /// </summary>
-    public class Statements 
+    public class Sentencias 
     {
-        public List<ExpressionSyntax> ExpressionsList { get; }
-        public Statements()
+        public List<Expresion> ListaExpresiones { get; }
+        public Sentencias()
         {
 
         }
 
-        public Statements(List<ExpressionSyntax> expressionsList)
+        public Sentencias(List<Expresion> expresiones)
         {
-            ExpressionsList = expressionsList;
+            ListaExpresiones = expresiones;
         }
 
-        internal void Add(ExpressionSyntax statement)
+        internal void Add(Expresion statement)
         {
-            ExpressionsList.Add(statement);
+            ListaExpresiones.Add(statement);
         }
     }
 }

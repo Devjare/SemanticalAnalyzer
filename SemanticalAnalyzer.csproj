@@ -57,6 +57,7 @@
     <Compile Include="CodeAnalysis\NumberExpressionSyntax.cs" />
     <Compile Include="CodeAnalysis\ParenthesizedExpressionSyntax.cs" />
     <Compile Include="CodeAnalysis\Parser.cs" />
+    <Compile Include="CodeAnalysis\StringExpressionSyntax.cs" />
     <Compile Include="CodeAnalysis\SyntaxKind.cs" />
     <Compile Include="CodeAnalysis\SyntaxNode.cs" />
     <Compile Include="CodeAnalysis\SyntaxToken.cs" />
