@@ -46,24 +46,30 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CodeAnalysis\BinaryExpressionSyntax.cs" />
-    <Compile Include="CodeAnalysis\BoolExpressionSyntax.cs" />
-    <Compile Include="CodeAnalysis\DeclarationExpressionSyntax.cs" />
-    <Compile Include="CodeAnalysis\Statements.cs" />
-    <Compile Include="CodeAnalysis\Evaluator.cs" />
-    <Compile Include="CodeAnalysis\ExpressionSyntax.cs" />
-    <Compile Include="CodeAnalysis\Lexer.cs" />
-    <Compile Include="CodeAnalysis\MainExpressionSyntax.cs" />
-    <Compile Include="CodeAnalysis\NumberExpressionSyntax.cs" />
-    <Compile Include="CodeAnalysis\ParenthesizedExpressionSyntax.cs" />
-    <Compile Include="CodeAnalysis\Parser.cs" />
-    <Compile Include="CodeAnalysis\StringExpressionSyntax.cs" />
-    <Compile Include="CodeAnalysis\SyntaxKind.cs" />
-    <Compile Include="CodeAnalysis\SyntaxNode.cs" />
-    <Compile Include="CodeAnalysis\SyntaxToken.cs" />
-    <Compile Include="CodeAnalysis\SyntaxTree.cs" />
-    <Compile Include="CodeAnalysis\UseExpressionSyntax.cs" />
-    <Compile Include="CodeAnalysis\WhileSyntax.cs" />
+    <Compile Include="CodeAnalysis\ExpresionAsignacion.cs" />
+    <Compile Include="CodeAnalysis\ExpresionBinaria.cs" />
+    <Compile Include="CodeAnalysis\ExpresionBool.cs" />
+    <Compile Include="CodeAnalysis\ExpresionDecimal.cs" />
+    <Compile Include="CodeAnalysis\ExpresionDeclaracion.cs" />
+    <Compile Include="CodeAnalysis\ExpresionIdentificador.cs" />
+    <Compile Include="CodeAnalysis\ExpresionIf.cs" />
+    <Compile Include="CodeAnalysis\ExpresionNumericaInvalida.cs" />
+    <Compile Include="CodeAnalysis\ExpresionString.cs" />
+    <Compile Include="CodeAnalysis\ExpresionStringInvalida.cs" />
+    <Compile Include="CodeAnalysis\Sentencias.cs" />
+    <Compile Include="CodeAnalysis\Evaluador.cs" />
+    <Compile Include="CodeAnalysis\Expresion.cs" />
+    <Compile Include="CodeAnalysis\AnalizadorLexico.cs" />
+    <Compile Include="CodeAnalysis\ExpresionMain.cs" />
+    <Compile Include="CodeAnalysis\ExpresionEntera.cs" />
+    <Compile Include="CodeAnalysis\ExpresionEnParentesis.cs" />
+    <Compile Include="CodeAnalysis\AnalizadorSintactico.cs" />
+    <Compile Include="CodeAnalysis\TipoSintaxis.cs" />
+    <Compile Include="CodeAnalysis\NodoSintaxis.cs" />
+    <Compile Include="CodeAnalysis\Token.cs" />
+    <Compile Include="CodeAnalysis\ArbolSintactico.cs" />
+    <Compile Include="CodeAnalysis\ExpresionUse.cs" />
+    <Compile Include="CodeAnalysis\ExpresionWhile.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

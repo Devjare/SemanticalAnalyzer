@@ -10,7 +10,6 @@ namespace SemanticalAnalyzer.CodeAnalysis
     class ExpresionWhile
     {
 
-
         // While OpenParenthesis Condition CloseParenthesis OpenCurlyBrackets Statements CloseCurlyBrackets
 
         public Token OpenParenthesisToken { get; }

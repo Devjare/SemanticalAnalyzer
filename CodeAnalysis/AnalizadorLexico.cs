@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace ExpressionEvaluator.CodeAnalysis
@@ -47,16 +48,61 @@ namespace ExpressionEvaluator.CodeAnalysis
 
                 var inicio = _posicion;
 
-                while (char.IsDigit(CaracterActual))
-                    SiguienteCaracter();
+                var isInteger = true;
+                var isValidNumber = true;
+                var dotsCount = 0;
+                var decimalsCount = 0;
+
+                while (char.IsDigit(CaracterActual) || CaracterActual == '.')
+                {
+                    if (CaracterActual == '.')
+                    {
+                        dotsCount++;
+                        isInteger = false;
+                        SiguienteCaracter();
+                        continue;
+                    }
+
+                    if (dotsCount > 1)
+                    {
+                        isValidNumber = false;
+                        break;
+                    }
+
+                    if (char.IsDigit(CaracterActual))
+                    {
+                        SiguienteCaracter();
+                        if (dotsCount == 1)
+                        {
+                            decimalsCount++;
+                            if (decimalsCount == 5)
+                            {
+                                break;
+                            }
+                        }
+                    }
+
+                }
 
                 var length = _posicion - inicio;
                 var texto = _texto.Substring(inicio, length);
 
-                int.TryParse(texto, out var valor);
+                if (isValidNumber)
+                {
+                    if (isInteger)
+                    {
+                        int.TryParse(texto, out var valor);
+                        return new Token(TipoSintaxis.TokenInteger, inicio, texto, valor);
+                    }
+                    else
+                    {
+                        float.TryParse(texto, out var valor);
+                        return new Token(TipoSintaxis.TokenDecimal, inicio, texto, valor);
+                    }
+                }
 
-                return new Token(TipoSintaxis.TokenInteger, inicio, texto, valor);
-
+                _diagnostico.Add($"ERROR: Invalid Number Format <{texto}>");
+                return new Token(TipoSintaxis.TokenInvalido, _posicion++, _texto.Substring(_posicion - 1, 1), null);
             }
 
             if (char.IsLetter(CaracterActual))

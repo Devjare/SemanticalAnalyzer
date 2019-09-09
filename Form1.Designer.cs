@@ -47,6 +47,7 @@
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.panelFileManager = new System.Windows.Forms.Panel();
             this.treeView1 = new System.Windows.Forms.TreeView();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.panelCode = new System.Windows.Forms.Panel();
             this.filesTabControl = new System.Windows.Forms.TabControl();
             this.newFileTabPage = new System.Windows.Forms.TabPage();
@@ -56,10 +57,6 @@
             this.panelLog = new System.Windows.Forms.Panel();
             this.txtLog = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.flowLayoutPanel5 = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnCompile = new System.Windows.Forms.Button();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
@@ -79,7 +76,9 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.salirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+            this.btnSymbols = new System.Windows.Forms.Button();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.btnShowLog = new System.Windows.Forms.Button();
             this.tblLayoutLevel0.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -100,6 +99,7 @@
             this.panelLog.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // tblLayoutLevel0
@@ -203,6 +203,12 @@
             this.treeView1.TabIndex = 0;
             this.treeView1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TreeView1_MouseClick);
             // 
+            // imageList1
+            // 
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "folder.png");
+            // 
             // panelCode
             // 
             this.panelCode.BackColor = System.Drawing.SystemColors.ButtonHighlight;
@@ -259,6 +265,7 @@
             // txtLineNumbers
             // 
             this.txtLineNumbers.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtLineNumbers.Font = new System.Drawing.Font("Courier New", 12.25F);
             this.txtLineNumbers.Location = new System.Drawing.Point(0, 0);
             this.txtLineNumbers.Multiline = true;
             this.txtLineNumbers.Name = "txtLineNumbers";
@@ -269,6 +276,7 @@
             // txtCode
             // 
             this.txtCode.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtCode.Font = new System.Drawing.Font("Courier New", 12.25F);
             this.txtCode.Location = new System.Drawing.Point(0, 0);
             this.txtCode.Multiline = true;
             this.txtCode.Name = "txtCode";
@@ -294,6 +302,7 @@
             this.txtLog.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtLog.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtLog.Font = new System.Drawing.Font("Courier New", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtLog.ForeColor = System.Drawing.Color.DarkRed;
             this.txtLog.Location = new System.Drawing.Point(0, 0);
             this.txtLog.Multiline = true;
             this.txtLog.Name = "txtLog";
@@ -309,46 +318,16 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel5, 4, 0);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel4, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel3, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel2, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.btnCompile, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btnSymbols, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 4, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 28);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(630, 47);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1177, 47);
             this.tableLayoutPanel1.TabIndex = 1;
-            // 
-            // flowLayoutPanel5
-            // 
-            this.flowLayoutPanel5.Location = new System.Drawing.Point(507, 3);
-            this.flowLayoutPanel5.Name = "flowLayoutPanel5";
-            this.flowLayoutPanel5.Size = new System.Drawing.Size(120, 41);
-            this.flowLayoutPanel5.TabIndex = 4;
-            // 
-            // flowLayoutPanel4
-            // 
-            this.flowLayoutPanel4.Location = new System.Drawing.Point(381, 3);
-            this.flowLayoutPanel4.Name = "flowLayoutPanel4";
-            this.flowLayoutPanel4.Size = new System.Drawing.Size(120, 41);
-            this.flowLayoutPanel4.TabIndex = 3;
-            // 
-            // flowLayoutPanel3
-            // 
-            this.flowLayoutPanel3.Location = new System.Drawing.Point(255, 3);
-            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
-            this.flowLayoutPanel3.Size = new System.Drawing.Size(120, 41);
-            this.flowLayoutPanel3.TabIndex = 2;
-            // 
-            // flowLayoutPanel2
-            // 
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(129, 3);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(120, 41);
-            this.flowLayoutPanel2.TabIndex = 1;
             // 
             // btnCompile
             // 
@@ -362,7 +341,7 @@
             this.btnCompile.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnCompile.Location = new System.Drawing.Point(3, 3);
             this.btnCompile.Name = "btnCompile";
-            this.btnCompile.Size = new System.Drawing.Size(120, 41);
+            this.btnCompile.Size = new System.Drawing.Size(229, 41);
             this.btnCompile.TabIndex = 5;
             this.btnCompile.Text = "Compile";
             this.btnCompile.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -412,13 +391,13 @@
             // archivoEnBlancoToolStripMenuItem
             // 
             this.archivoEnBlancoToolStripMenuItem.Name = "archivoEnBlancoToolStripMenuItem";
-            this.archivoEnBlancoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.archivoEnBlancoToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.archivoEnBlancoToolStripMenuItem.Text = "Archivo en blanco";
             // 
             // archivoKaasToolStripMenuItem
             // 
             this.archivoKaasToolStripMenuItem.Name = "archivoKaasToolStripMenuItem";
-            this.archivoKaasToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.archivoKaasToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.archivoKaasToolStripMenuItem.Text = "Archivo kaas";
             // 
             // toolStripSeparator1
@@ -445,7 +424,7 @@
             // 
             this.toolStripMenuItem2.Enabled = false;
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(83, 22);
             this.toolStripMenuItem2.Text = "...";
             // 
             // abrirDirectorioToolStripMenuItem
@@ -466,7 +445,7 @@
             // 
             this.toolStripMenuItem3.Enabled = false;
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(83, 22);
             this.toolStripMenuItem3.Text = "...";
             // 
             // toolStripSeparator2
@@ -505,11 +484,44 @@
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
             // 
-            // imageList1
+            // btnSymbols
             // 
-            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
-            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageList1.Images.SetKeyName(0, "folder.png");
+            this.btnSymbols.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnSymbols.Location = new System.Drawing.Point(238, 3);
+            this.btnSymbols.Name = "btnSymbols";
+            this.btnSymbols.Size = new System.Drawing.Size(229, 41);
+            this.btnSymbols.TabIndex = 0;
+            this.btnSymbols.Text = "Show Symbols Table";
+            this.btnSymbols.UseVisualStyleBackColor = true;
+            this.btnSymbols.Click += new System.EventHandler(this.BtnSymbols_Click);
+            // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.ColumnCount = 3;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 73F));
+            this.tableLayoutPanel2.Controls.Add(this.btnShowLog, 2, 0);
+            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(943, 3);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 2;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(231, 41);
+            this.tableLayoutPanel2.TabIndex = 6;
+            // 
+            // btnShowLog
+            // 
+            this.btnShowLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnShowLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.btnShowLog.Location = new System.Drawing.Point(161, 3);
+            this.btnShowLog.Name = "btnShowLog";
+            this.btnShowLog.Size = new System.Drawing.Size(67, 14);
+            this.btnShowLog.TabIndex = 0;
+            this.btnShowLog.Text = "^";
+            this.btnShowLog.UseVisualStyleBackColor = true;
+            this.btnShowLog.Click += new System.EventHandler(this.BtnShowLog_Click);
             // 
             // Form1
             // 
@@ -547,6 +559,7 @@
             this.tableLayoutPanel1.ResumeLayout(false);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            this.tableLayoutPanel2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -586,12 +599,11 @@
         private System.Windows.Forms.TextBox txtCode;
         private System.Windows.Forms.TextBox txtLineNumbers;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel5;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel4;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.Button btnCompile;
         private System.Windows.Forms.ImageList imageList1;
+        private System.Windows.Forms.Button btnSymbols;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.Button btnShowLog;
     }
 }
 

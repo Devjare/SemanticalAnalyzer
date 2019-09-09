@@ -7,3 +7,4 @@ C:\Users\jandr\source\repos\SemanticalAnalyzer\obj\Debug\SemanticalAnalyzer.cspr
 C:\Users\jandr\source\repos\SemanticalAnalyzer\obj\Debug\SemanticalAnalyzer.csproj.CoreCompileInputs.cache
 C:\Users\jandr\source\repos\SemanticalAnalyzer\obj\Debug\SemanticalAnalyzer.exe
 C:\Users\jandr\source\repos\SemanticalAnalyzer\obj\Debug\SemanticalAnalyzer.pdb
+C:\Users\jandr\source\repos\SemanticalAnalyzer\obj\Debug\SemanticalAnalyzer.csprojAssemblyReference.cache

@@ -14,7 +14,7 @@ namespace ExpressionEvaluator.CodeAnalysis
         ExpresionBinaria,
         TokenEspacioEnBlanco,
         TokenMenorQue,
-        ExpresionNumerica,
+        ExpresionEntera,
         ExpresionEnParentesis,
         TokenPotencia,
         TokenModulo,
@@ -60,7 +60,16 @@ namespace ExpressionEvaluator.CodeAnalysis
         ExplresionDeclaracion,
         CharToken,
         StringExpressionSyntax,
-        TokenFuncionMain
+        TokenFuncionMain,
+        ExpresionIf,
+        TokenDecimal,
+        ExpresionDecimal,
+        ExpresionAsignacion,
+        ExpresionIdentificador,
+        ExpresionNumericaInvalida,
+        TokenNumericoInvalido,
+        ExpresionStirng,
+        ExpresionStringInvalida
     }
 
 }

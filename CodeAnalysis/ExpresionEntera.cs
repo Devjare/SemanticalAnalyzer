@@ -11,7 +11,7 @@ namespace ExpressionEvaluator.CodeAnalysis
 
         
         public Token Numero { get; }
-        public override TipoSintaxis Tipo => TipoSintaxis.ExpresionNumerica;
+        public override TipoSintaxis Tipo => TipoSintaxis.ExpresionEntera;
         public override IEnumerable<NodoSintaxis> GetChildren()
         {
             yield return Numero;

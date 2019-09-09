@@ -93,25 +93,19 @@ namespace SemanticalAnalyzer
             txtLineNumbers.Update();
         }
 
+        Dictionary<String, Object> SymbolsTable { get; set; }
         private void BtnCompile_Click(object sender, EventArgs e)
         {
-
+            txtLog.Clear();
             var evaluator = new Evaluador();
             var diagnostics = evaluator.Evaluar(txtCode.Text);
+            this.SymbolsTable = evaluator.TablaSimbolos;
 
             foreach (var diagnostic in diagnostics)
             {
-                Console.WriteLine($"{diagnostic}");
+                txtLog.Text += diagnostic + Environment.NewLine;
             }
 
-            if (splitContainer1.Panel2Collapsed)
-            {
-                splitContainer1.Panel2Collapsed = false;
-            }
-            else
-            {
-                splitContainer1.Panel2Collapsed = true;
-            }
         }
 
         private void ToolStripDropDownButton1_Click(object sender, EventArgs e)
@@ -157,5 +151,26 @@ namespace SemanticalAnalyzer
             
         }
 
+        private void BtnSymbols_Click(object sender, EventArgs e)
+        {
+            String data = "";
+            foreach (var item in SymbolsTable)
+            {
+                data += $"[Key: {item.Key}, Value: {item.Value}]{Environment.NewLine}";
+            }
+            MessageBox.Show(data);
+        }
+
+        private void BtnShowLog_Click(object sender, EventArgs e)
+        {
+            if (splitContainer1.Panel2Collapsed)
+            {
+                splitContainer1.Panel2Collapsed = false;
+            }
+            else
+            {
+                splitContainer1.Panel2Collapsed = true;
+            }
+        }
     }
 }

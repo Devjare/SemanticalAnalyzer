@@ -1,0 +1,26 @@
+﻿using ExpressionEvaluator.CodeAnalysis;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SemanticalAnalyzer.CodeAnalysis
+{
+    class ExpresionIf : Expresion
+    {
+        public Token ParentesisApertura { get; }
+        public Expresion Expresion { get;  }
+        public Token ParentesisCierre { get; }
+        public Token LlaveApertura { get; }
+        public List<Expresion> Expresiones { get; }
+        public Token LlaveCierre { get; }
+
+        public override TipoSintaxis Tipo => TipoSintaxis.ExpresionIf;
+
+        public override IEnumerable<NodoSintaxis> GetChildren()
+        {
+            
+        }
+    }
+}
