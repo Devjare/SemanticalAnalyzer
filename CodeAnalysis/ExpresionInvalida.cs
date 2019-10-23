@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace SemanticalAnalyzer.CodeAnalysis
 {
-    class ExpresionNumericaInvalida : Expresion
+    class ExpresionInvalida : Expresion
     {
-        public ExpresionNumericaInvalida(Token valor)
+        public ExpresionInvalida(Token valor)
         {
             Valor = valor;
         }
 
         public Token Valor { get; }
-        public override TipoSintaxis Tipo { get => TipoSintaxis.ExpresionNumericaInvalida; }
+        public override TipoSintaxis Tipo { get => TipoSintaxis.ExpresionInvalida; }
         public override IEnumerable<NodoSintaxis> GetChildren()
         {
             yield return Valor;

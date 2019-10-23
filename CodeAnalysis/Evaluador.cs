@@ -9,8 +9,9 @@ namespace ExpressionEvaluator.CodeAnalysis
     {
         private readonly Expresion _raiz;
         public Dictionary<String, Object> TablaSimbolos { get; set; }
+        public Dictionary<String, Object> TablaSintaxis { get; set; }
         public List<String> Diagnostico;
-
+        public List<Token> TokenList;
         public Evaluador(Expresion raiz, Dictionary<String, Object> tablaSimbolos) : this(raiz)
         {
             TablaSimbolos = tablaSimbolos;
@@ -22,20 +23,46 @@ namespace ExpressionEvaluator.CodeAnalysis
 
         public Evaluador()
         {
-            TablaSimbolos = new Dictionary<string, object>();
+            TablaSimbolos = new Dictionary<String, Object>();
             Diagnostico = new List<String>();
+            TablaSintaxis = new Dictionary<string, object>();
         }
-
+        public List<Token> ListaExpresiones;
         public List<String> Evaluar(String codigo)
         {
             var parser = new AnalizadorSintactico(codigo);
             var arbol = parser.Analizar();
+            TokenList = parser.TokenList;
+
+            ListaExpresiones = new List<Token>();
+
+            //for (int i = 0; i < TokenList.Count; i++)
+            //{
+            //    if (TokenList[i].Tipo == TipoSintaxis.IntegerKeyword || 
+            //        TokenList[i].Tipo == TipoSintaxis.FloatKeyword ||
+            //        TokenList[i].Tipo == TipoSintaxis.StringKeyword)
+            //    {
+            //        // Current int
+            //        // i++ -> Current =
+            //        // i++ -> Current Identifier/Number.
+            //        // i++ -> Current ;
+            //        var id = TokenList[i++];
+            //        i++;// Equals token.
+            //        var actual = TokenList[++i];
+            //        while (actual.Tipo != TipoSintaxis.TokenPuntoyComa)
+            //        {
+            //            ListaExpresiones.Add(actual);
+            //            actual = TokenList[++i];
+            //        }
+            //    }
+            //}
+
 
             // Agregamos los errores sintacticos.
             Diagnostico.AddRange(arbol.Diagnostico);
 
             // Generate Symbols table
-            var tablaSimbolosSintactica = parser.TablaSimbolos;
+            var tablaSimbolosSintactica = TablaSintaxis = parser.TablaSimbolos;
 
             foreach (var registro in tablaSimbolosSintactica)
             {
@@ -50,9 +77,20 @@ namespace ExpressionEvaluator.CodeAnalysis
                         continue;
                     }
 
-                    var result = EvaluarExpresionAritmetica((Expresion)token.Value);
-                    // Si existe ya ese identificador, marcar error en cualquier caso invalido.
-                    this.TablaSimbolos[registro.Key] = result;
+                    try
+                    {
+                        var result = EvaluarExpresionAritmetica((Expresion)token.Value, token.Tipo);
+                        if ((result as Token).Tipo == TipoSintaxis.TokenInvalido)
+                        {
+                            continue;
+                        }
+                        // Si existe ya ese identificador, marcar error en cualquier caso invalido.
+                        this.TablaSimbolos[registro.Key] = result;
+                    }
+                    catch (Exception ex)
+                    {
+                        
+                    }
                 }
                 else if(token.Tipo == TipoSintaxis.BoolKeyword)
                 {
@@ -95,10 +133,10 @@ namespace ExpressionEvaluator.CodeAnalysis
                         
             if (nodo is ExpresionIdentificador id)
             {
-                var identificador = id.Identificador.Value.ToString();
-                var tokenString = (TablaSimbolos[identificador] as Token).Value;
+                var identificador = id.Identificador;
+                var tokenString = (TablaSimbolos[identificador.Value.ToString()] as Token).Value;
 
-                if (!TablaSimbolos.ContainsKey(identificador))
+                if (!TablaSimbolos.ContainsKey(identificador.Value.ToString()))
                 {
                     Diagnostico.Add($"ERROR: Variable no declarada <{identificador}>");
                 }
@@ -128,19 +166,31 @@ namespace ExpressionEvaluator.CodeAnalysis
             }
 
             if (nodo is ExpresionEnParentesis p)
-                return EvaluarExpresionAritmetica(p.Expresion);
+                return EvaluarExpresionString(p.Expresion);
 
             throw new Exception($"Nodo inesperado {nodo.Tipo}");
         }
 
-        public Token EvaluarExpresionAritmetica(Expresion nodo)
+        public Token EvaluarExpresionAritmetica(Expresion nodo, TipoSintaxis tipo)
         {
+            if (nodo is ExpresionNumericaInvalida invalidExpression)
+            {
+                return new Token(TipoSintaxis.TokenInvalido, 0, null, null);
+            }
+
             if (nodo is ExpresionEntera n)
             {
                 int valor = Convert.ToInt32((Convert.ToDouble(n.Numero.Value)));
                 var tokenEntero = new Token(TipoSintaxis.TokenInteger, 0, valor.ToString(), valor);
                 return tokenEntero;
             }
+
+            //if (nodo is ExpresionEntera n)
+            //{
+            //    int valor = Convert.ToInt32((Convert.ToDouble(n.Numero.Value)));
+            //    var tokenEntero = new Token(TipoSintaxis.TokenInteger, 0, valor.ToString(), valor);
+            //    return tokenEntero;
+            //}
 
 
             if (nodo is ExpresionDecimal nd)
@@ -152,10 +202,10 @@ namespace ExpressionEvaluator.CodeAnalysis
 
             if (nodo is ExpresionIdentificador id)
             {
-                var identificador = id.Identificador.Value.ToString();
-                var tokenNumero = (TablaSimbolos[identificador] as Token).Value;
+                var identificador = id.Identificador;
+                var tokenNumero = (TablaSimbolos[identificador.Value.ToString()] as Token).Value;
 
-                if (!TablaSimbolos.ContainsKey(identificador))
+                if (!TablaSimbolos.ContainsKey(identificador.Value.ToString()))
                 {
                     Console.WriteLine($"ERROR: Variable no declarada <{identificador}>");
                     Diagnostico.Add($"ERROR: Variable no declarada <{identificador}>");
@@ -181,8 +231,8 @@ namespace ExpressionEvaluator.CodeAnalysis
 
             if (nodo is ExpresionBinaria b)
             {
-                var izquierda = EvaluarExpresionAritmetica(b.Izquierda);
-                var derecha = EvaluarExpresionAritmetica(b.Derecha);
+                var izquierda = EvaluarExpresionAritmetica(b.Izquierda, tipo);
+                var derecha = EvaluarExpresionAritmetica(b.Derecha, tipo);
 
                 if (b.Operador.Tipo == TipoSintaxis.TokenMas)
                 {
@@ -269,7 +319,7 @@ namespace ExpressionEvaluator.CodeAnalysis
             }
 
             if (nodo is ExpresionEnParentesis p)
-                return EvaluarExpresionAritmetica(p.Expresion);
+                return EvaluarExpresionAritmetica(p.Expresion, tipo);
 
             throw new Exception($"Nodo inesperado {nodo.Tipo}");
         }

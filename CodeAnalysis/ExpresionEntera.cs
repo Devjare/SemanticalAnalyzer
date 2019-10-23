@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace ExpressionEvaluator.CodeAnalysis
@@ -8,10 +9,8 @@ namespace ExpressionEvaluator.CodeAnalysis
         {
             Numero = numero;
         }
-
-        
         public Token Numero { get; }
-        public override TipoSintaxis Tipo => TipoSintaxis.ExpresionEntera;
+        public override TipoSintaxis Tipo { get => TipoSintaxis.ExpresionEntera; }
         public override IEnumerable<NodoSintaxis> GetChildren()
         {
             yield return Numero;

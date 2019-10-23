@@ -1,4 +1,6 @@
 
+using SemanticalAnalyzer.CodeAnalysis;
+using System;
 using System.Collections.Generic;
 
 namespace ExpressionEvaluator.CodeAnalysis
@@ -12,7 +14,7 @@ namespace ExpressionEvaluator.CodeAnalysis
             Derecha = right;
         }
 
-        public override TipoSintaxis Tipo => TipoSintaxis.ExpresionBinaria;
+        public override TipoSintaxis Tipo { get=> TipoSintaxis.ExpresionBinaria; }
         public Expresion Izquierda { get; }
         public Token Operador { get; }
         public Expresion Derecha { get; }

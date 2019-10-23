@@ -68,6 +68,7 @@ namespace SemanticalAnalyzer
         }
         
         private void TxtCode_KeyDown(object sender, KeyEventArgs e)
+
         {
             if (e.KeyCode == Keys.Enter)
             {
@@ -96,6 +97,11 @@ namespace SemanticalAnalyzer
         Dictionary<String, Object> SymbolsTable { get; set; }
         private void BtnCompile_Click(object sender, EventArgs e)
         {
+            Compile();
+        }
+
+        private void Compile()
+        {
             txtLog.Clear();
             var evaluator = new Evaluador();
             var diagnostics = evaluator.Evaluar(txtCode.Text);
@@ -105,7 +111,18 @@ namespace SemanticalAnalyzer
             {
                 txtLog.Text += diagnostic + Environment.NewLine;
             }
+            ShowSymbolsTable();
+            var presentadorCuadruplos = new PersentadorCuadruplos(evaluator.TablaSintaxis);
+            MostrarTablaCuadruplos(presentadorCuadruplos.Procesar());
+        }
 
+        private void MostrarTablaCuadruplos(Dictionary<String, String> dict)
+        {
+            dgvCuadruplos.Rows.Clear();
+            foreach (var item in dict)
+            {
+                dgvCuadruplos.Rows.Add(item.Key, item.Value);
+            }
         }
 
         private void ToolStripDropDownButton1_Click(object sender, EventArgs e)
@@ -153,12 +170,23 @@ namespace SemanticalAnalyzer
 
         private void BtnSymbols_Click(object sender, EventArgs e)
         {
+            ShowSymbolsTable();
+        }
+
+        private void ShowSymbolsTable()
+        {
             String data = "";
+
+            if (SymbolsTable == null)
+            {
+                return;
+            }
+
+            dgvSimbolos.Rows.Clear();
             foreach (var item in SymbolsTable)
             {
-                data += $"[Key: {item.Key}, Value: {item.Value}]{Environment.NewLine}";
+                dgvSimbolos.Rows.Add(item.Key, (item.Value as Token).Value);
             }
-            MessageBox.Show(data);
         }
 
         private void BtnShowLog_Click(object sender, EventArgs e)
@@ -171,6 +199,19 @@ namespace SemanticalAnalyzer
             {
                 splitContainer1.Panel2Collapsed = true;
             }
+        }
+
+        private void TxtCode_KeyDown_1(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F5)
+            {
+                Compile();
+            }
+        }
+
+        private void TreeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+
         }
     }
 }

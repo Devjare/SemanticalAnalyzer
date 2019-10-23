@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace ExpressionEvaluator.CodeAnalysis
@@ -11,7 +12,7 @@ namespace ExpressionEvaluator.CodeAnalysis
             ParentesisCierre = parentesisCierre;
         }
 
-        public override TipoSintaxis Tipo => TipoSintaxis.ExpresionEnParentesis;
+        public override TipoSintaxis Tipo { get => TipoSintaxis.ExpresionEnParentesis; }
         public Token ParentesisApertura { get; }
         public Expresion Expresion { get; }
         public Token ParentesisCierre { get; }

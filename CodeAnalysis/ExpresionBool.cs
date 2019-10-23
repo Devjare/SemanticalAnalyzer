@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ExpressionEvaluator.CodeAnalysis
 {
@@ -8,8 +9,7 @@ namespace ExpressionEvaluator.CodeAnalysis
         {
             TokenBool = tokenBool;
         }
-
-        public override TipoSintaxis Tipo => TipoSintaxis.ExpresionBool;
+        public override TipoSintaxis Tipo { get => TipoSintaxis.ExpresionBool; }
 
         public Token TokenBool { get; }
         public override IEnumerable<NodoSintaxis> GetChildren()

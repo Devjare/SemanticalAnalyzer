@@ -10,7 +10,7 @@ namespace SemanticalAnalyzer.CodeAnalysis
     class ExpresionDecimal : Expresion
     {
 
-        public override TipoSintaxis Tipo => TipoSintaxis.ExpresionDecimal;
+        public override TipoSintaxis Tipo { get => TipoSintaxis.ExpresionDecimal; }
 
         public Token Numero;
         public ExpresionDecimal(Token numero)

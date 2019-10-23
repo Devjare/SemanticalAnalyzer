@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ExpressionEvaluator.CodeAnalysis
 {
@@ -20,7 +21,7 @@ namespace ExpressionEvaluator.CodeAnalysis
             this.PuntoyComa = puntoyComa;
         }
 
-        public override TipoSintaxis Tipo => TipoSintaxis.ExplresionDeclaracion;
+        public override TipoSintaxis Tipo { get => TipoSintaxis.ExpresionDeclaracion; }
 
         public override IEnumerable<NodoSintaxis> GetChildren()
         {

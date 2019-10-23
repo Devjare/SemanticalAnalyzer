@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ExpressionEvaluator.CodeAnalysis
 {
@@ -11,8 +12,7 @@ namespace ExpressionEvaluator.CodeAnalysis
             this.Valor = tokenString;
         }
 
-        public override TipoSintaxis Tipo => TipoSintaxis.ExpresionStirng;
-
+        public override TipoSintaxis Tipo { get => TipoSintaxis.ExpresionStirng; }
         public override IEnumerable<NodoSintaxis> GetChildren()
         {
             yield return Valor;

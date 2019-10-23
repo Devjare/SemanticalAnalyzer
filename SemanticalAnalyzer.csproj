@@ -53,6 +53,7 @@
     <Compile Include="CodeAnalysis\ExpresionDeclaracion.cs" />
     <Compile Include="CodeAnalysis\ExpresionIdentificador.cs" />
     <Compile Include="CodeAnalysis\ExpresionIf.cs" />
+    <Compile Include="CodeAnalysis\ExpresionInvalida.cs" />
     <Compile Include="CodeAnalysis\ExpresionNumericaInvalida.cs" />
     <Compile Include="CodeAnalysis\ExpresionString.cs" />
     <Compile Include="CodeAnalysis\ExpresionStringInvalida.cs" />
@@ -70,12 +71,15 @@
     <Compile Include="CodeAnalysis\ArbolSintactico.cs" />
     <Compile Include="CodeAnalysis\ExpresionUse.cs" />
     <Compile Include="CodeAnalysis\ExpresionWhile.cs" />
+    <Compile Include="Cuadruplo.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="PersentadorCuadruplos.cs" />
+    <Compile Include="PresentadorCuadruplos.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">

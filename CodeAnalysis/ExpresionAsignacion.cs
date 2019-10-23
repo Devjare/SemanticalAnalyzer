@@ -9,7 +9,7 @@ namespace SemanticalAnalyzer.CodeAnalysis
 {
     class ExpresionAsignacion : Expresion
     {
-        public override TipoSintaxis Tipo => TipoSintaxis.ExpresionAsignacion;
+        public override TipoSintaxis Tipo { get => TipoSintaxis.ExpresionAsignacion; }
 
         public override IEnumerable<NodoSintaxis> GetChildren()
         {

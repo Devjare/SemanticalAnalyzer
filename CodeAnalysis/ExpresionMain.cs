@@ -30,7 +30,7 @@ namespace SemanticalAnalyzer.CodeAnalysis
         public List<Expresion> Expresiones { get; }
         public Token LlaveCierre { get; }
 
-        public override TipoSintaxis Tipo => TipoSintaxis.ExpresionMain;
+        public override TipoSintaxis Tipo { get => TipoSintaxis.ExpresionMain; }
 
         public override IEnumerable<NodoSintaxis> GetChildren()
         {

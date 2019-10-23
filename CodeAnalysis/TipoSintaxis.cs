@@ -57,7 +57,7 @@ namespace ExpressionEvaluator.CodeAnalysis
         ExpresionMain,
         ExpresionBool,
         TokenBool,
-        ExplresionDeclaracion,
+        ExpresionDeclaracion,
         CharToken,
         StringExpressionSyntax,
         TokenFuncionMain,
@@ -69,7 +69,8 @@ namespace ExpressionEvaluator.CodeAnalysis
         ExpresionNumericaInvalida,
         TokenNumericoInvalido,
         ExpresionStirng,
-        ExpresionStringInvalida
+        ExpresionStringInvalida,
+        ExpresionInvalida
     }
 
 }

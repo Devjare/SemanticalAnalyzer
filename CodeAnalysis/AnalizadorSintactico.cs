@@ -27,10 +27,11 @@ namespace ExpressionEvaluator.CodeAnalysis
                 if (token.Tipo != TipoSintaxis.TokenEspacioEnBlanco &&
                     token.Tipo != TipoSintaxis.TokenInvalido)
                 {
-                    tokens.Add(token);   
+                    tokens.Add(token);
                 }
             } while (token.Tipo != TipoSintaxis.TokenEOF);
 
+            TokenList = tokens;
             _tokens = tokens.ToArray();
             _diagnostics.AddRange(lexer.Diagnostico);
             TablaSimbolos = new Dictionary<String, Object>();
@@ -50,6 +51,8 @@ namespace ExpressionEvaluator.CodeAnalysis
         }
 
         private Token TokenActual => Peek(0);
+
+        public List<Token> TokenList { get; internal set; }
 
         private Token SiguienteToken()
         {
@@ -83,6 +86,19 @@ namespace ExpressionEvaluator.CodeAnalysis
 
         private Expresion AnalizarExpresion()
         {
+            if (TokenActual.Tipo == TipoSintaxis.TokenInvalido)
+            {
+                _diagnostics.Add($"ERROR: Token encontrado en posicion invalida <{TokenActual.ToString()}>");
+                SiguienteToken();
+                return new ExpresionInvalida(TokenActual);
+            }
+            if (TokenActual.Tipo == TipoSintaxis.Identificador)
+            {
+                _diagnostics.Add($"ERROR: Identificador encontrado en posicion invalida <{TokenActual.Value.ToString()}>");
+                SiguienteToken();
+                return new ExpresionIdentificador(TokenActual);
+            }
+
             if (TokenActual.Tipo == TipoSintaxis.UseKeyword)
             {
                 return AnalizarExpresionUse();
@@ -93,7 +109,9 @@ namespace ExpressionEvaluator.CodeAnalysis
                 return AnalizarExpresionMain();
             }
 
-            return null;
+            _diagnostics.Add($"ERROR: Token encontrado en posicion invalida <{TokenActual.ToString()}>");
+            SiguienteToken();
+            return new ExpresionInvalida(TokenActual);
         }
 
         private Expresion AnalizarExpresionMain()
@@ -118,6 +136,12 @@ namespace ExpressionEvaluator.CodeAnalysis
                 TokenActual.Tipo == TipoSintaxis.BoolKeyword)
                 {
                     expresiones.Add(AnalizarExpresionDeDeclaracion());
+                }
+                // Invalid token
+                else
+                {
+                    _diagnostics.Add($"ERROR: Identificador Invalido <{TokenActual.Value.ToString()}>");
+                    return new ExpresionInvalida(TokenActual);
                 }
             }
 
@@ -144,6 +168,7 @@ namespace ExpressionEvaluator.CodeAnalysis
                     tokenTipoDato.Tipo.Equals(TipoSintaxis.DoubleKeyword))
             {
                 expresion = AnalizarExpresionAritmetica(tokenTipoDato);
+
                 // If expresion is not an arithmetic expresion, then is invalid.
             }
 
@@ -163,17 +188,17 @@ namespace ExpressionEvaluator.CodeAnalysis
             if (tokenTipoDato.Tipo == TipoSintaxis.IntegerKeyword)
             {
                 TablaSimbolos[tokenIdentificador.Value.ToString()] =
-                    new Token(TipoSintaxis.TokenInteger, _position, tokenIdentificador.Value.ToString(), expresion);
+                    new Token(TipoSintaxis.TokenInteger, tokenIdentificador.Position, tokenIdentificador.Value.ToString(), expresion);
             }
             else if (tokenTipoDato.Tipo == TipoSintaxis.FloatKeyword)
             {
                 TablaSimbolos[tokenIdentificador.Value.ToString()] =
-                    new Token(TipoSintaxis.TokenDecimal, _position, tokenIdentificador.Value.ToString(), expresion);
+                    new Token(TipoSintaxis.TokenDecimal, tokenIdentificador.Position, tokenIdentificador.Value.ToString(), expresion);
             }
-            else if(tokenTipoDato.Tipo == TipoSintaxis.StringKeyword)
+            else if (tokenTipoDato.Tipo == TipoSintaxis.StringKeyword)
             {
                 TablaSimbolos[tokenIdentificador.Value.ToString()] =
-                    new Token(TipoSintaxis.TokenString, _position, tokenIdentificador.Value.ToString(), expresion);
+                    new Token(TipoSintaxis.TokenString, tokenIdentificador.Position, tokenIdentificador.Value.ToString(), expresion);
             }
 
             var semicolonToken = CoincideCon(TipoSintaxis.TokenPuntoyComa);
@@ -212,10 +237,10 @@ namespace ExpressionEvaluator.CodeAnalysis
             }
             else if (tokenString.Tipo is TipoSintaxis.Identificador)
             {
-                var identificador = tokenString.Value.ToString();
-                if (TablaSimbolos.ContainsKey(identificador))
+                var identificador = tokenString;
+                if (TablaSimbolos.ContainsKey(identificador.Value.ToString()))
                 {
-                    var variable = (Token)TablaSimbolos[identificador];
+                    var variable = (Token)TablaSimbolos[identificador.Value.ToString()];
                     if (variable.Tipo is TipoSintaxis.TokenString)
                     {
                         return new ExpresionIdentificador(tokenString);
@@ -265,7 +290,7 @@ namespace ExpressionEvaluator.CodeAnalysis
 
         #region "Flow Control Structures Parsing Section
 
-        private Expresion AnalizarExpresionLogica() 
+        private Expresion AnalizarExpresionLogica()
         {
             var izquierda = AnalizarExpresionLogicaPrimaria();
 
@@ -305,7 +330,7 @@ namespace ExpressionEvaluator.CodeAnalysis
         public Expresion AnalizarExpresionAritmetica(Token tipoDeDato)
         {
             return AnalizarTerminos(tipoDeDato);
-        }      
+        }
 
         private Expresion AnalizarTerminos(Token tipoDeDato)
         {
@@ -364,20 +389,30 @@ namespace ExpressionEvaluator.CodeAnalysis
 
             var tokenNumero = SiguienteToken();
 
-            if (tokenNumero.Tipo is TipoSintaxis.TokenInteger)
+            if (tokenNumero.Tipo is TipoSintaxis.TokenInteger && tipoDeDato.Tipo == TipoSintaxis.IntegerKeyword)
             {
                 return new ExpresionEntera(tokenNumero);
             }
-            else if (tokenNumero.Tipo is TipoSintaxis.TokenDecimal)
+            else if (tokenNumero.Tipo is TipoSintaxis.TokenDecimal && tipoDeDato.Tipo == TipoSintaxis.IntegerKeyword)
+            {
+                var token = new Token(tokenNumero.Tipo, tokenNumero.Position, tokenNumero.Text, (int)float.Parse(tokenNumero.Value.ToString()));
+                return new ExpresionEntera(token);
+            }
+            else if (tokenNumero.Tipo is TipoSintaxis.TokenDecimal && tipoDeDato.Tipo == TipoSintaxis.FloatKeyword)
             {
                 return new ExpresionDecimal(tokenNumero);
             }
+            else if (tokenNumero.Tipo is TipoSintaxis.TokenInteger && tipoDeDato.Tipo == TipoSintaxis.FloatKeyword)
+            {
+                var token = new Token(tokenNumero.Tipo, tokenNumero.Position, tokenNumero.Text, (float)int.Parse(tokenNumero.Value.ToString()));
+                return new ExpresionDecimal(token);
+            }
             else if (tokenNumero.Tipo is TipoSintaxis.Identificador)
             {
-                var identificador = tokenNumero.Value.ToString();
-                if (TablaSimbolos.ContainsKey(identificador))
+                var identificador = tokenNumero;
+                if (TablaSimbolos.ContainsKey(identificador.Value.ToString()))
                 {
-                    var variable = (Token) TablaSimbolos[identificador];
+                    var variable = (Token)TablaSimbolos[identificador.Value.ToString()];
                     if (variable.Tipo is TipoSintaxis.TokenInteger ||
                         variable.Tipo is TipoSintaxis.TokenDecimal)
                     {
@@ -388,6 +423,11 @@ namespace ExpressionEvaluator.CodeAnalysis
                         _diagnostics.Add($"ERROR: Se variable de tipo invalido, se esperaba tipo <{variable.Tipo}>");
                         return new ExpresionIdentificador(new Token(TipoSintaxis.Identificador, _position, null, null));
                     }
+                }
+                else
+                {
+                    _diagnostics.Add($"ERROR: Identificador <{identificador}> no existe en el ambito actual.");
+                    return new ExpresionNumericaInvalida(new Token(TipoSintaxis.TokenNumericoInvalido, _position, null, null));
                 }
             }
 

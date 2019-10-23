@@ -18,7 +18,7 @@ namespace SemanticalAnalyzer.CodeAnalysis
             TokenPuntoyComa = tokenPuntoyComa;
         }
 
-        public override TipoSintaxis Tipo => TipoSintaxis.ExpresionUse;
+        public override TipoSintaxis Tipo { get => TipoSintaxis.ExpresionUse; }
 
         public Token TokenUse { get; }
         // Could be an asterists or a common identifier
