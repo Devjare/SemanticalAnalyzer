@@ -41,7 +41,7 @@ namespace SemanticalAnalyzer
         {
 
             var dialog = new OpenFileDialog();
-            dialog.Filter = "All Files (*.KAAS)|*.kaas";
+            dialog.Filter = "All Files (*.HYD)|*.hyd";
             dialog.FilterIndex = 1;
             dialog.Multiselect = true;
 

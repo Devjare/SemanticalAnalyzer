@@ -74,7 +74,8 @@ namespace ExpressionEvaluator.CodeAnalysis
         TokenIf,
         TokenElse,
         TokenElseInvalido,
-        TokenIfInvalido
+        TokenIfInvalido,
+        ExpresionLogica
     }
 
 }

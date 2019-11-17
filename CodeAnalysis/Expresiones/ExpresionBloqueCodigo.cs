@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SemanticalAnalyzer.CodeAnalysis
 {
-    abstract class ExpresionBloqueCodigo : Expresion
+    class ExpresionBloqueCodigo : Expresion
     {
         public ExpresionBloqueCodigo(List<Expresion> expresiones)
         {
@@ -18,7 +18,10 @@ namespace SemanticalAnalyzer.CodeAnalysis
 
         public override IEnumerable<NodoSintaxis> GetChildren()
         {
-            throw new NotImplementedException();
+            foreach (var item in Sentencias.ListaExpresiones)
+            {
+                yield return item;
+            }
         }
     }
 }

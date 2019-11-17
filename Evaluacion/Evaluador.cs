@@ -80,8 +80,8 @@ namespace ExpressionEvaluator.CodeAnalysis
                 }
                 else if(token.Tipo == TipoSintaxis.BoolKeyword)
                 {
-                    var result = EvaluarExpresionLogica((Expresion)token.Value);
-                    this.TablaSimbolos[registro.Key] = result;
+                    // var result = EvaluarExpresionLogica((Expresion)token.Value);
+                    // this.TablaSimbolos[registro.Key] = result;
                 }
                 else if (token.Tipo == TipoSintaxis.StringKeyword)
                 {
@@ -313,32 +313,32 @@ namespace ExpressionEvaluator.CodeAnalysis
             throw new Exception($"Nodo inesperado {nodo.Tipo}");
         }
 
-        private bool EvaluarExpresionLogica(Expresion nodo)
-        {
-            if (nodo is ExpresionBool n)
-                return Boolean.Parse(n.TokenBool.Value.ToString());
+        //private bool EvaluarExpresionLogica(Expresion nodo)
+        //{
+        //    if (nodo is ExpresionBooleana n)
+        //        return Boolean.Parse(n.TokenBool.Value.ToString());
 
-            if (nodo is ExpresionBinaria b)
-            {
-                var izquierda = EvaluarExpresionLogica(b.Izquierda);
-                var derecha = EvaluarExpresionLogica(b.Derecha);
+        //    if (nodo is ExpresionBinaria b)
+        //    {
+        //        var izquierda = EvaluarExpresionLogica(b.Izquierda);
+        //        var derecha = EvaluarExpresionLogica(b.Derecha);
 
-                if (b.Operador.Tipo == TipoSintaxis.TokenAnd)
-                    return izquierda && derecha;
-                else if (b.Operador.Tipo == TipoSintaxis.TokenOr)
-                    return izquierda || derecha;
-                else if (b.Operador.Tipo == TipoSintaxis.TokenIgualIgual)
-                    return izquierda == derecha;
-                else if (b.Operador.Tipo == TipoSintaxis.TokenNotIgual)
-                    return izquierda != derecha;
-                else
-                    throw new Exception($"Operador binario inesperado: {b.Operador.Tipo}");
-            }
+        //        if (b.Operador.Tipo == TipoSintaxis.TokenAnd)
+        //            return izquierda && derecha;
+        //        else if (b.Operador.Tipo == TipoSintaxis.TokenOr)
+        //            return izquierda || derecha;
+        //        else if (b.Operador.Tipo == TipoSintaxis.TokenIgualIgual)
+        //            return izquierda == derecha;
+        //        else if (b.Operador.Tipo == TipoSintaxis.TokenNotIgual)
+        //            return izquierda != derecha;
+        //        else
+        //            throw new Exception($"Operador binario inesperado: {b.Operador.Tipo}");
+        //    }
 
-            if (nodo is ExpresionEnParentesis p)
-                return EvaluarExpresionLogica(p.Expresion);
+        //    if (nodo is ExpresionEnParentesis p)
+        //        return EvaluarExpresionLogica(p.Expresion);
 
-            throw new Exception($"Nodo inesperado {nodo.Tipo}");
-        }
+        //    throw new Exception($"Nodo inesperado {nodo.Tipo}");
+        //}
     }
 }
