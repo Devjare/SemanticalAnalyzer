@@ -8,7 +8,6 @@ namespace ExpressionEvaluator.CodeAnalysis
         private readonly string _texto;
         private int _posicion;
         private List<string> _diagnostico = new List<string>();
-
         public AnalizadorLexico(string texto)
         {
             _texto = texto;
@@ -208,6 +207,14 @@ namespace ExpressionEvaluator.CodeAnalysis
                     return new Token(TipoSintaxis.TokenBool, inicio, "BoolToken", texto);
                 if (texto == "main")
                     return new Token(TipoSintaxis.TokenFuncionMain, inicio, "TokenFuncionMain", texto);
+                if (texto == "if")
+                {
+                    return new Token(TipoSintaxis.TokenIf, inicio, "TokenIf", texto);
+                }
+                if (texto == "else")
+                {
+                    return new Token(TipoSintaxis.TokenElse, inicio, "TokenElse", texto);
+                }
 
                 return new Token(TipoSintaxis.Identificador, inicio, "Identifier", texto);
             }

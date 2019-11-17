@@ -2,6 +2,7 @@
 using SemanticalAnalyzer.CodeAnalysis;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace ExpressionEvaluator.CodeAnalysis
 {
@@ -12,6 +13,7 @@ namespace ExpressionEvaluator.CodeAnalysis
         public Dictionary<String, Object> TablaSintaxis { get; set; }
         public List<String> Diagnostico;
         public List<Token> TokenList;
+        public long SintaxTimeTaken, LexTimeTaken;
         public Evaluador(Expresion raiz, Dictionary<String, Object> tablaSimbolos) : this(raiz)
         {
             TablaSimbolos = tablaSimbolos;
@@ -31,32 +33,16 @@ namespace ExpressionEvaluator.CodeAnalysis
         public List<String> Evaluar(String codigo)
         {
             var parser = new AnalizadorSintactico(codigo);
+            LexTimeTaken = parser.LexTimeTaken;
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            
             var arbol = parser.Analizar();
+
             TokenList = parser.TokenList;
 
             ListaExpresiones = new List<Token>();
-
-            //for (int i = 0; i < TokenList.Count; i++)
-            //{
-            //    if (TokenList[i].Tipo == TipoSintaxis.IntegerKeyword || 
-            //        TokenList[i].Tipo == TipoSintaxis.FloatKeyword ||
-            //        TokenList[i].Tipo == TipoSintaxis.StringKeyword)
-            //    {
-            //        // Current int
-            //        // i++ -> Current =
-            //        // i++ -> Current Identifier/Number.
-            //        // i++ -> Current ;
-            //        var id = TokenList[i++];
-            //        i++;// Equals token.
-            //        var actual = TokenList[++i];
-            //        while (actual.Tipo != TipoSintaxis.TokenPuntoyComa)
-            //        {
-            //            ListaExpresiones.Add(actual);
-            //            actual = TokenList[++i];
-            //        }
-            //    }
-            //}
-
 
             // Agregamos los errores sintacticos.
             Diagnostico.AddRange(arbol.Diagnostico);
@@ -108,6 +94,9 @@ namespace ExpressionEvaluator.CodeAnalysis
                 }
 
             }
+
+            stopwatch.Stop();
+            SintaxTimeTaken = stopwatch.ElapsedMilliseconds;
 
             return Diagnostico;
         }

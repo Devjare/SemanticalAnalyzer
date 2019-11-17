@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -21,8 +22,7 @@ namespace SemanticalAnalyzer
 
         private void TxtCode_TextChanged(object sender, EventArgs e)
         {
-            filesTabControl.TabPages[0].Text = "New File... *";
-            
+            filesTabControl.TabPages[0].Text = "New File... *";        
         }
 
         private void AbrirToolStripMenuItem_Click(object sender, EventArgs e)
@@ -104,9 +104,22 @@ namespace SemanticalAnalyzer
         {
             txtLog.Clear();
             var evaluator = new Evaluador();
-            var diagnostics = evaluator.Evaluar(txtCode.Text);
-            this.SymbolsTable = evaluator.TablaSimbolos;
 
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            
+            var diagnostics = evaluator.Evaluar(txtCode.Text);
+            
+            stopwatch.Stop();            
+            var secondsElapsed = stopwatch.ElapsedMilliseconds;
+            
+            MessageBox.Show($"Tiempo total Compilacion: {secondsElapsed}ms, \n\r" +
+                $"Tiempo Analisis Lexico: {evaluator.LexTimeTaken}ms \n\r" +
+                $"Tiempo Analisis Sintactico: {evaluator.SintaxTimeTaken}ms \n\r");
+
+            this.SymbolsTable = evaluator.TablaSimbolos;
+            
+    
             foreach (var diagnostic in diagnostics)
             {
                 txtLog.Text += diagnostic + Environment.NewLine;

@@ -48,15 +48,19 @@
   <ItemGroup>
     <Compile Include="CodeAnalysis\ExpresionAsignacion.cs" />
     <Compile Include="CodeAnalysis\ExpresionBinaria.cs" />
+    <Compile Include="CodeAnalysis\ExpresionBloqueCodigo.cs" />
     <Compile Include="CodeAnalysis\ExpresionBool.cs" />
     <Compile Include="CodeAnalysis\ExpresionDecimal.cs" />
     <Compile Include="CodeAnalysis\ExpresionDeclaracion.cs" />
+    <Compile Include="CodeAnalysis\ExpresionElseInvalida.cs" />
     <Compile Include="CodeAnalysis\ExpresionIdentificador.cs" />
     <Compile Include="CodeAnalysis\ExpresionIf.cs" />
+    <Compile Include="CodeAnalysis\ExpresionIfInvalida.cs" />
     <Compile Include="CodeAnalysis\ExpresionInvalida.cs" />
     <Compile Include="CodeAnalysis\ExpresionNumericaInvalida.cs" />
     <Compile Include="CodeAnalysis\ExpresionString.cs" />
     <Compile Include="CodeAnalysis\ExpresionStringInvalida.cs" />
+    <Compile Include="CodeAnalysis\Pair.cs" />
     <Compile Include="CodeAnalysis\Sentencias.cs" />
     <Compile Include="CodeAnalysis\Evaluador.cs" />
     <Compile Include="CodeAnalysis\Expresion.cs" />
@@ -94,6 +98,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="HydraSamples\forloop.hyd" />
+    <None Include="HydraSamples\FuncionAddition.hyd" />
+    <None Include="HydraSamples\readAndCompare.hdy" />
+    <None Include="HydraSamples\readFromKeyboard.hyd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -108,7 +116,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="KaasSamples\Addition.kaas.txt" />
+    <Content Include="HydraSamples\Addition.kaas.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

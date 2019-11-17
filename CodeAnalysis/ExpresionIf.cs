@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SemanticalAnalyzer.CodeAnalysis
 {
-    class ExpresionIf : Expresion
+    class ExpresionIf : ExpresionBloqueCodigo
     {
         public ExpresionIf(Token parentesisApertura, Expresion expresion, 
             Token parentesisCierre, Token llaveApertura, List<Expresion> expresiones, Token llaveCierre)

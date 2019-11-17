@@ -1,0 +1,14 @@
+﻿void main(){
+	int a = readInt();
+	int b = readInt();
+
+	string str = readString();
+	string str2 = readString();
+
+	float f1 = readFloat();
+	float f2 = readFloat();
+
+	println("a: " + a + ", b: " + b);
+	println("f1: " + f1 + ", f2: " + f2);
+	println("str1: " + str1 + ", str2: " + str2);
+}

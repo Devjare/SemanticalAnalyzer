@@ -1,6 +1,7 @@
 using SemanticalAnalyzer.CodeAnalysis;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace ExpressionEvaluator.CodeAnalysis
 {
@@ -13,13 +14,19 @@ namespace ExpressionEvaluator.CodeAnalysis
         private int _position;
 
         public Dictionary<String, Object> TablaSimbolos { get; }
+        // int suma(int a, int b);
+        // functionsMap["suma"] = Pair<"int", {TokenInteger(a), TokenInteger(b)}>;
+        public Dictionary<String, Pair<Object, List<Token>>> functionsMap;
+        public long LexTimeTaken { get; set; }
 
         public AnalizadorSintactico(string text)
         {
             var tokens = new List<Token>();
 
+            var stopwatch = new Stopwatch();
             var lexer = new AnalizadorLexico(text);
             Token token;
+            stopwatch.Start();
             do
             {
                 token = lexer.SiguienteToken();
@@ -30,6 +37,9 @@ namespace ExpressionEvaluator.CodeAnalysis
                     tokens.Add(token);
                 }
             } while (token.Tipo != TipoSintaxis.TokenEOF);
+            stopwatch.Stop();
+
+            LexTimeTaken = stopwatch.ElapsedMilliseconds;
 
             TokenList = tokens;
             _tokens = tokens.ToArray();
@@ -72,7 +82,6 @@ namespace ExpressionEvaluator.CodeAnalysis
 
         public ArbolSintactico Analizar()
         {
-
             var sentencias = new Sentencias(new List<Expresion>());
 
             while (TokenActual.Tipo != TipoSintaxis.TokenEOF)
@@ -104,9 +113,12 @@ namespace ExpressionEvaluator.CodeAnalysis
                 return AnalizarExpresionUse();
             }
 
-            if (TokenActual.Tipo == TipoSintaxis.VoidKeyword)
+            if (TokenActual.Tipo == TipoSintaxis.VoidKeyword ||
+                TokenActual.Tipo == TipoSintaxis.IntegerKeyword ||
+                TokenActual.Tipo == TipoSintaxis.FloatKeyword ||
+                TokenActual.Tipo == TipoSintaxis.StringKeyword)
             {
-                return AnalizarExpresionMain();
+                return AnalizarFuncion();
             }
 
             _diagnostics.Add($"ERROR: Token encontrado en posicion invalida <{TokenActual.ToString()}>");
@@ -114,10 +126,36 @@ namespace ExpressionEvaluator.CodeAnalysis
             return new ExpresionInvalida(TokenActual);
         }
 
+        private Expresion AnalizarFuncion()
+        {
+            var tokenTipoDeDato = SiguienteToken();
+            var tokenNombreFuncion = CoincideCon(TipoSintaxis.TokenFuncionMain);
+
+            if (tokenNombreFuncion.Value.Equals("main"))
+            {
+                return AnalizarExpresionMain();
+            }
+            else // Analizar otros tipos de funciones y variables globales: COMING SOON.
+            {
+                var tokenParentesisApertura = CoincideCon(TipoSintaxis.TokenParentesisApertura);
+                // Identifier -> Value.
+                var parametros = new Dictionary<TipoSintaxis, Token>();
+                // functionsMap["suma"] = Pair<"int", {TokenInteger(a), TokenInteger(b)}>;
+                // Mientras no sea un parentesis de cierre.
+                while (CoincideCon(TipoSintaxis.TokenParentesisCierre) == null)
+                {
+                    var tokenTipoParam = SiguienteToken();
+                    var tokenNombreParam = CoincideCon(TipoSintaxis.Identificador);
+
+
+                }
+            }
+
+            return new ExpresionInvalida(TokenActual);
+        }
+
         private Expresion AnalizarExpresionMain()
         {
-            var tokenVoid = CoincideCon(TipoSintaxis.VoidKeyword);
-            var tokenMain = CoincideCon(TipoSintaxis.TokenFuncionMain);
             var parentesisApertura = CoincideCon(TipoSintaxis.TokenParentesisApertura);
             var parentesisCierre = CoincideCon(TipoSintaxis.TokenParentesisCierre);
             var llaveApertura = CoincideCon(TipoSintaxis.TokenLlavesApertura);
@@ -126,6 +164,7 @@ namespace ExpressionEvaluator.CodeAnalysis
 
             while (TokenActual.Tipo != TipoSintaxis.TokenLlavesCierre)
             {
+                var existeIf = false;
                 // Parsing Declaration Statements
                 if (TokenActual.Tipo == TipoSintaxis.IntegerKeyword ||
                 TokenActual.Tipo == TipoSintaxis.StringKeyword ||
@@ -136,6 +175,24 @@ namespace ExpressionEvaluator.CodeAnalysis
                 TokenActual.Tipo == TipoSintaxis.BoolKeyword)
                 {
                     expresiones.Add(AnalizarExpresionDeDeclaracion());
+                }
+                else if (TokenActual.Tipo == TipoSintaxis.TokenIf)
+                {
+                    // Analizar If
+                    // Pendiente optimizar, codigo repetido muchas veces.
+                    existeIf = true;
+                    expresiones.Add(AnalizarExpresionIf());
+                }
+                else if (TokenActual.Tipo == TipoSintaxis.TokenElse && existeIf)
+                {
+                    // Si existe el if, entonces se puede analizar el Else
+                    expresiones.Add(AnalizarExpresionElse());
+                }
+                else if (TokenActual.Tipo == TipoSintaxis.TokenElse && !existeIf)
+                {
+                    // En caso de no existir un if, mostrar un error.
+                    _diagnostics.Add($"ERROR: Instruccion incompleta, se esperaba Token: \"If\" para: <{TokenActual.Value.ToString()}>");
+                    return new ExpresionInvalida(TokenActual);
                 }
                 // Invalid token
                 else
@@ -148,6 +205,34 @@ namespace ExpressionEvaluator.CodeAnalysis
             // Main closure
             var llaveCierre = CoincideCon(TipoSintaxis.TokenLlavesCierre);
             return new ExpresionMain(parentesisApertura, parentesisCierre, llaveApertura, expresiones, llaveCierre);
+        }
+
+        private Expresion AnalizarExpresionElse()
+        {
+
+            return new ExpresionElseInvalida(new Token(TipoSintaxis.TokenElseInvalido, _position, null, null));
+        }
+
+        private Expresion AnalizarExpresionIf()
+        {
+            var tokenParentesisApertura = CoincideCon(TipoSintaxis.TokenParentesisApertura);
+            var expresionCondicion = AnalizarExpresionBooleana();
+            var tokenParentesisCierre = CoincideCon(TipoSintaxis.TokenParentesisCierre);
+            var llaveApertura = CoincideCon(TipoSintaxis.TokenLlavesApertura);
+
+            var expresiones = new List<Expresion>();
+
+            while (TokenActual.Tipo != TipoSintaxis.TokenLlavesCierre)
+            { 
+
+            }
+
+            return new ExpresionIfInvalida(new Token(TipoSintaxis.TokenIfInvalido, _position, null, null));
+        }
+
+        private Expresion AnalizarExpresionBooleana()
+        {
+            throw new NotImplementedException();
         }
 
         private Expresion AnalizarExpresionDeDeclaracion()

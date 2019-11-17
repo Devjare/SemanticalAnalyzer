@@ -1,0 +1,16 @@
+﻿void main(){
+
+	int a = In.readInt();
+	int b = In.readInt();
+	
+	if(a > b){
+		println("a: " + a + ", es mayor que b: " + b);
+	}
+	else if(a < b){
+		println("a: " + a + ", es menor que b: " + b);
+	}
+	else{
+		println("a: " + a + " y b: " + b + " son iguales.");
+	}
+
+}
