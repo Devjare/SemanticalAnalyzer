@@ -1,5 +1,6 @@
 
 using SemanticalAnalyzer.CodeAnalysis;
+using SemanticalAnalyzer.CodeAnalysis.Expresiones_Individuales;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -37,7 +38,7 @@ namespace ExpressionEvaluator.CodeAnalysis
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            
+
             var arbol = parser.Analizar();
 
             TokenList = parser.TokenList;
@@ -75,13 +76,13 @@ namespace ExpressionEvaluator.CodeAnalysis
                     }
                     catch (Exception ex)
                     {
-                        
+
                     }
                 }
-                else if(token.Tipo == TipoSintaxis.BoolKeyword)
+                else if (token.Tipo == TipoSintaxis.BoolKeyword)
                 {
-                    // var result = EvaluarExpresionLogica((Expresion)token.Value);
-                    // this.TablaSimbolos[registro.Key] = result;
+                    var result = EvaluarExpresionLogica((Expresion)token.Value);
+                    this.TablaSimbolos[registro.Key] = result;
                 }
                 else if (token.Tipo == TipoSintaxis.StringKeyword)
                 {
@@ -102,15 +103,6 @@ namespace ExpressionEvaluator.CodeAnalysis
         }
 
 
-        // Este metodo revisara que los tipos de las declaraciones sean correctos.
-        private void TableLookup()
-        {
-            foreach (var item in TablaSimbolos)
-            {
-
-            }
-        }
-
         public Token EvaluarExpresionString(Expresion nodo)
         {
             if (nodo is ExpresionString n)
@@ -119,7 +111,7 @@ namespace ExpressionEvaluator.CodeAnalysis
                 var tokenString = new Token(TipoSintaxis.TokenInteger, 0, valor, valor);
                 return tokenString;
             }
-                        
+
             if (nodo is ExpresionIdentificador id)
             {
                 var identificador = id.Identificador;
@@ -149,7 +141,7 @@ namespace ExpressionEvaluator.CodeAnalysis
                     string result = izquierda.Value.ToString() + derecha.Value.ToString();
                     return new Token(TipoSintaxis.TokenString, 0, result, result);
                 }
-                                
+
                 else
                     throw new Exception($"Operador binario inesperado: {b.Operador.Tipo}");
             }
@@ -184,7 +176,7 @@ namespace ExpressionEvaluator.CodeAnalysis
 
             if (nodo is ExpresionDecimal nd)
             {
-                float valor = (float) nd.Numero.Value;
+                float valor = (float)nd.Numero.Value;
                 var tokenDecimal = new Token(TipoSintaxis.TokenDecimal, 0, valor.ToString(), valor);
                 return tokenDecimal;
             }
@@ -313,32 +305,74 @@ namespace ExpressionEvaluator.CodeAnalysis
             throw new Exception($"Nodo inesperado {nodo.Tipo}");
         }
 
-        //private bool EvaluarExpresionLogica(Expresion nodo)
-        //{
-        //    if (nodo is ExpresionBooleana n)
-        //        return Boolean.Parse(n.TokenBool.Value.ToString());
+        private bool EvaluarExpresionLogica(Expresion nodo)
+        {
+            if (nodo is ExpresionLogica n)
+                return Boolean.Parse(n.token.Value.ToString());
 
-        //    if (nodo is ExpresionBinaria b)
-        //    {
-        //        var izquierda = EvaluarExpresionLogica(b.Izquierda);
-        //        var derecha = EvaluarExpresionLogica(b.Derecha);
+            if (nodo is ExpresionRelacional relExp)
+            {
+                var izq = relExp.Izquierda;
+                var der = relExp.Derecha;
 
-        //        if (b.Operador.Tipo == TipoSintaxis.TokenAnd)
-        //            return izquierda && derecha;
-        //        else if (b.Operador.Tipo == TipoSintaxis.TokenOr)
-        //            return izquierda || derecha;
-        //        else if (b.Operador.Tipo == TipoSintaxis.TokenIgualIgual)
-        //            return izquierda == derecha;
-        //        else if (b.Operador.Tipo == TipoSintaxis.TokenNotIgual)
-        //            return izquierda != derecha;
-        //        else
-        //            throw new Exception($"Operador binario inesperado: {b.Operador.Tipo}");
-        //    }
+                if (izq.Tipo == TipoSintaxis.ExpresionIdentificador)
+                {
+                    var expIdent = izq as ExpresionIdentificador;
+                    var identificador = izq;
+                    var tokenString = (TablaSimbolos[identificador.Value.ToString()] as Token).Value;
 
-        //    if (nodo is ExpresionEnParentesis p)
-        //        return EvaluarExpresionLogica(p.Expresion);
+                    if (!TablaSimbolos.ContainsKey(identificador.Value.ToString()))
+                    {
+                        Diagnostico.Add($"ERROR: Variable no declarada <{identificador}>");
+                    }
+                    else if (!(tokenString is null))
+                    {
+                        return new Token(TipoSintaxis.TokenString, 0, tokenString.ToString(), tokenString.ToString());
+                    }
+                }
 
-        //    throw new Exception($"Nodo inesperado {nodo.Tipo}");
-        //}
+                if (relExp.Tipo == TipoSintaxis.ExpresionEntera)
+                {
+
+                }
+                if (relExp.Tipo == TipoSintaxis.ExpresionDecimal)
+                {
+
+                }
+                if (relExp.Tipo == TipoSintaxis.ExpresionStirng)
+                {
+
+                }
+                if (relExp.Tipo == TipoSintaxis.ExpresionLogica)
+                {
+
+                }
+                {
+                    // 
+                }
+            }
+
+            if (nodo is ExpresionBooleana b)
+            {
+                var izquierda = EvaluarExpresionLogica(b.Izquierda);
+                var derecha = EvaluarExpresionLogica(b.Derecha);
+
+                if (b.Operador.Tipo == TipoSintaxis.TokenAnd)
+                    return izquierda && derecha;
+                else if (b.Operador.Tipo == TipoSintaxis.TokenOr)
+                    return izquierda || derecha;
+                else if (b.Operador.Tipo == TipoSintaxis.TokenIgualIgual)
+                    return izquierda == derecha;
+                else if (b.Operador.Tipo == TipoSintaxis.TokenNotIgual)
+                    return izquierda != derecha;
+                else
+                    throw new Exception($"Operador binario inesperado: {b.Operador.Tipo}");
+            }
+
+            if (nodo is ExpresionEnParentesis p)
+                return EvaluarExpresionLogica(p.Expresion);
+
+            throw new Exception($"Nodo inesperado {nodo.Tipo}");
+        }
     }
 }
