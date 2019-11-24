@@ -38,11 +38,6 @@ namespace ExpressionEvaluator.CodeAnalysis
                 return new Token(TipoSintaxis.TokenEOF, _posicion, "\0", null);
             }
 
-            // Implement for decimal pointing numebrs
-            // And make the new Expression Syntax class for
-            // that entry
-            // Find if the token is a Number
-
             if (CaracterActual == '-' && char.IsDigit(_texto[_posicion + 1]))
             {
                 var inicio = _posicion;
@@ -214,6 +209,10 @@ namespace ExpressionEvaluator.CodeAnalysis
                 if (texto == "else")
                 {
                     return new Token(TipoSintaxis.TokenElse, inicio, "TokenElse", texto);
+                }
+                if (texto == "println")
+                {
+                    return new Token(TipoSintaxis.TokenPrintln, inicio, "TokenPrintln", texto);
                 }
 
                 return new Token(TipoSintaxis.Identificador, inicio, "Identifier", texto);

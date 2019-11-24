@@ -64,6 +64,7 @@
     <Compile Include="CodeAnalysis\Expresiones\ExpresionRelacional.cs" />
     <Compile Include="CodeAnalysis\Expresiones Individuales\ExpresionString.cs" />
     <Compile Include="CodeAnalysis\Expresiones\Invalidas\ExpresionStringInvalida.cs" />
+    <Compile Include="CodeAnalysis\ExpresionFuncionPrintln.cs" />
     <Compile Include="CodeAnalysis\Pair.cs" />
     <Compile Include="CodeAnalysis\Sentencias.cs" />
     <Compile Include="Evaluacion\Evaluador.cs" />
@@ -105,8 +106,10 @@
     <None Include="HydraSamples\forloop.hyd" />
     <None Include="HydraSamples\FuncionAddition.hyd" />
     <None Include="HydraSamples\IfelseSimple.hyd" />
+    <None Include="HydraSamples\HolaMundo.hyd" />
     <None Include="HydraSamples\readAndCompare.hyd" />
     <None Include="HydraSamples\readFromKeyboard.hyd" />
+    <None Include="HydraSamples\TextFile1.hyd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
