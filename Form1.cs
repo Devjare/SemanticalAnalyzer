@@ -125,8 +125,17 @@ namespace SemanticalAnalyzer
                 txtLog.Text += diagnostic + Environment.NewLine;
             }
             ShowSymbolsTable();
+            MostrarResultadosImpresiones(evaluator.Salida);
             var presentadorCuadruplos = new PersentadorCuadruplos(evaluator.TablaSintaxis);
             MostrarTablaCuadruplos(presentadorCuadruplos.Procesar());
+        }
+
+        private void MostrarResultadosImpresiones(List<string> salida)
+        {
+            salida.ForEach(i => 
+            {
+                txtLog.Text += $"{i}{Environment.NewLine}";
+            });
         }
 
         private void MostrarTablaCuadruplos(Dictionary<String, String> dict)
