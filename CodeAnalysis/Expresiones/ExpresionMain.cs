@@ -14,6 +14,7 @@ namespace SemanticalAnalyzer.CodeAnalysis
         {
             ParentesisApertura = parentesisApertura;
             ParentesisCierre = parentesisCierre;
+            Expresiones = expresiones;
             LlaveApertura = llaveApertura;
             LlaveCierre = llaveCierre;
         }

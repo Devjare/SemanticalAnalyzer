@@ -16,6 +16,10 @@ namespace ExpressionEvaluator.CodeAnalysis
         public List<String> Salida;
         public List<Token> TokenList;
         public long SintaxTimeTaken, LexTimeTaken;
+
+        public Dictionary<String, Object> TablaResultados;
+        public int ContadorIfs;
+
         public Evaluador(Expresion raiz, Dictionary<String, Object> tablaSimbolos) : this(raiz)
         {
             TablaSimbolos = tablaSimbolos;
@@ -31,6 +35,8 @@ namespace ExpressionEvaluator.CodeAnalysis
             Diagnostico = new List<String>();
             Salida = new List<string>();
             TablaSintaxis = new Dictionary<string, object>();
+            TablaResultados = new Dictionary<string, object>();
+            ContadorIfs = 0;
         }
         public List<Token> ListaExpresiones;
         public List<String> Evaluar(String codigo)
@@ -50,6 +56,25 @@ namespace ExpressionEvaluator.CodeAnalysis
             // Agregamos los errores sintacticos.
             Diagnostico.AddRange(arbol.Diagnostico);
 
+            // PRUEBA EVALUACION DIRECTA DEL ARBOL.
+            foreach (var expresion in arbol.Raiz.ListaExpresiones)
+            {
+                
+                if (expresion is ExpresionMain expMain)
+                {
+                    var resultado = EvaluarFuncionMain(expresion);
+                    if (resultado == false)
+                    {
+                        // TODO Fracaso la evaluacion
+
+                    }
+                    else
+                    {
+                        // TDOO Evaluacion Exitosa
+                    }
+                }
+            }
+           
             // Generate Symbols table
             var tablaSimbolosSintactica = TablaSintaxis = parser.TablaSimbolos;
 
@@ -134,6 +159,186 @@ namespace ExpressionEvaluator.CodeAnalysis
             return Diagnostico;
         }
 
+        private bool EvaluarFuncionMain(Expresion expresionMain)
+        {
+
+            var listaExpresionesMain = expresionMain as ExpresionMain;
+            foreach (var expresion in listaExpresionesMain.Expresiones)
+            {
+                if (expresion is ExplresionDeclaracion declaracion)
+                {
+                    var identificador = declaracion.Identificador;
+                    var exp = declaracion.Expresion;
+
+                    Token resultadoExpresion = null;
+
+                    switch (exp.Tipo)
+                    {
+                        case TipoSintaxis.ExpresionEntera:
+
+                            resultadoExpresion = EvaluarExpresionAritmetica(exp as ExpresionEntera);
+                            TablaResultados[declaracion.Identificador.Value.ToString()] = resultadoExpresion.Value.ToString();
+
+                            break;
+                        case TipoSintaxis.ExpresionDecimal:
+
+                            resultadoExpresion = EvaluarExpresionAritmetica(exp as ExpresionDecimal);
+                            TablaResultados[declaracion.Identificador.Value.ToString()] = resultadoExpresion.Value.ToString();
+
+                            break;
+                        case TipoSintaxis.ExpresionStirng:
+
+                            resultadoExpresion = EvaluarExpresionString(exp as ExpresionString);
+                            TablaResultados[declaracion.Identificador.Value.ToString()] = resultadoExpresion.Value.ToString();
+
+                            break;
+                        case TipoSintaxis.ExpresionBinaria:
+
+                            resultadoExpresion = EvaluarExpresionBinaria(exp);
+                            TablaResultados[declaracion.Identificador.Value.ToString()] = resultadoExpresion.Value.ToString();
+
+                            break;
+                    }
+                }
+                else if(expresion is ExpresionFuncionPrintln println)
+                {
+
+                }
+            }
+
+            return true;
+        }
+
+        public Token EvaluarExpresionBinaria(Expresion expresion)
+        {
+            bool esString = false;
+            var izq = (expresion as ExpresionBinaria).Izquierda;
+            
+            Token resultadoIzquierda = null;
+
+            // Expresion Izquierda
+            switch (izq.Tipo)
+            {
+                case TipoSintaxis.ExpresionEntera:
+
+                    resultadoIzquierda = EvaluarExpresionAritmetica(izq as ExpresionEntera);
+
+                    break;
+                case TipoSintaxis.ExpresionDecimal:
+
+                    resultadoIzquierda = EvaluarExpresionAritmetica(izq as ExpresionDecimal);
+
+                    break;
+                case TipoSintaxis.ExpresionStirng:
+
+                    resultadoIzquierda = EvaluarExpresionString(izq as ExpresionString);
+                    esString = true;
+
+                    break;
+                case TipoSintaxis.ExpresionBinaria:
+
+                    resultadoIzquierda = EvaluarExpresionBinaria(izq);
+
+                    break;
+            }
+
+            // Expresion derecha
+
+            var der = (expresion as ExpresionBinaria).Derecha;
+            Token resultadoDerecha = null;
+
+            switch (der.Tipo)
+            {
+                case TipoSintaxis.ExpresionEntera:
+
+                    resultadoDerecha = EvaluarExpresionAritmetica(der as ExpresionEntera);
+
+                    break;
+                case TipoSintaxis.ExpresionDecimal:
+
+                    resultadoDerecha = EvaluarExpresionAritmetica(der as ExpresionDecimal);
+
+                    break;
+                case TipoSintaxis.ExpresionStirng:
+
+                    resultadoDerecha = EvaluarExpresionString(der as ExpresionString);
+                    esString = true;
+
+                    break;
+                case TipoSintaxis.ExpresionBinaria:
+
+                    resultadoDerecha = EvaluarExpresionBinaria(der);
+
+                    break;
+            }
+
+            // Evaluar resultados
+            var operador = (expresion as ExpresionBinaria).Operador;
+
+            Token resultado = null;
+
+            switch (operador.Tipo)
+            {
+                case TipoSintaxis.TokenMas:
+                    if (esString)
+                    {
+                        var stringResult = resultadoIzquierda.Value.ToString() + resultadoDerecha.Value.ToString();
+                        resultado = new Token(TipoSintaxis.TokenString, -1, stringResult, stringResult);
+                    }
+                    else
+                    {
+                        if (resultadoIzquierda.Tipo == TipoSintaxis.TokenInteger)
+                        {
+                            var intResult = Int32.Parse(resultadoIzquierda.Value.ToString()) + Int32.Parse(resultadoDerecha.Value.ToString());
+                            resultado = new Token(TipoSintaxis.TokenInteger, -1, intResult.ToString(), intResult);
+                        }
+                        else
+                        {
+                            var decResult = Double.Parse(resultadoIzquierda.Value.ToString()) + Double.Parse(resultadoDerecha.Value.ToString());
+                            resultado = new Token(TipoSintaxis.TokenDecimal, -1, decResult.ToString(), decResult);
+                        }
+                    }
+                    break;
+                case TipoSintaxis.TokenMenos:
+                    if (resultadoIzquierda.Tipo == TipoSintaxis.TokenInteger)
+                    {
+                        var intResult = Int32.Parse(resultadoIzquierda.Value.ToString()) - Int32.Parse(resultadoDerecha.Value.ToString());
+                        resultado = new Token(TipoSintaxis.TokenInteger, -1, intResult.ToString(), intResult);
+                    }
+                    else
+                    {
+                        var decResult = Double.Parse(resultadoIzquierda.Value.ToString()) - Double.Parse(resultadoDerecha.Value.ToString());
+                        resultado = new Token(TipoSintaxis.TokenDecimal, -1, decResult.ToString(), decResult);
+                    }
+                    break;
+                case TipoSintaxis.TokenMultiplicacion:
+                    if (resultadoIzquierda.Tipo == TipoSintaxis.TokenInteger)
+                    {
+                        var intResult = Int32.Parse(resultadoIzquierda.Value.ToString()) * Int32.Parse(resultadoDerecha.Value.ToString());
+                        resultado = new Token(TipoSintaxis.TokenInteger, -1, intResult.ToString(), intResult);
+                    }
+                    else
+                    {
+                        var decResult = Double.Parse(resultadoIzquierda.Value.ToString()) * Double.Parse(resultadoDerecha.Value.ToString());
+                        resultado = new Token(TipoSintaxis.TokenDecimal, -1, decResult.ToString(), decResult);
+                    }
+                    break;
+                case TipoSintaxis.TokenDivision:
+                    if (resultadoIzquierda.Tipo == TipoSintaxis.TokenInteger)
+                    {
+                        var intResult = Int32.Parse(resultadoIzquierda.Value.ToString()) / Int32.Parse(resultadoDerecha.Value.ToString());
+                        resultado = new Token(TipoSintaxis.TokenInteger, -1, intResult.ToString(), intResult);
+                    }
+                    else
+                    {
+                        var decResult = Double.Parse(resultadoIzquierda.Value.ToString()) / Double.Parse(resultadoDerecha.Value.ToString());
+                        resultado = new Token(TipoSintaxis.TokenDecimal, -1, decResult.ToString(), decResult);
+                    }
+                    break;
+            }
+
+            return resultado;
+        }
 
         public Token EvaluarExpresionString(Expresion nodo)
         {

@@ -5,16 +5,30 @@ VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SemanticalAnalyzer", "SemanticalAnalyzer.csproj", "{419904BB-4493-4938-9E72-B8B5031BB6E4}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Instalador", "..\Instalador\Instalador.vdproj", "{CAC4F9DF-37F0-4CEF-9370-5A151FA97FBD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{419904BB-4493-4938-9E72-B8B5031BB6E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{419904BB-4493-4938-9E72-B8B5031BB6E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{419904BB-4493-4938-9E72-B8B5031BB6E4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{419904BB-4493-4938-9E72-B8B5031BB6E4}.Debug|x86.Build.0 = Debug|Any CPU
 		{419904BB-4493-4938-9E72-B8B5031BB6E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{419904BB-4493-4938-9E72-B8B5031BB6E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{419904BB-4493-4938-9E72-B8B5031BB6E4}.Release|x86.ActiveCfg = Release|Any CPU
+		{419904BB-4493-4938-9E72-B8B5031BB6E4}.Release|x86.Build.0 = Release|Any CPU
+		{CAC4F9DF-37F0-4CEF-9370-5A151FA97FBD}.Debug|Any CPU.ActiveCfg = Debug
+		{CAC4F9DF-37F0-4CEF-9370-5A151FA97FBD}.Debug|x86.ActiveCfg = Debug
+		{CAC4F9DF-37F0-4CEF-9370-5A151FA97FBD}.Debug|x86.Build.0 = Debug
+		{CAC4F9DF-37F0-4CEF-9370-5A151FA97FBD}.Release|Any CPU.ActiveCfg = Release
+		{CAC4F9DF-37F0-4CEF-9370-5A151FA97FBD}.Release|x86.ActiveCfg = Release
+		{CAC4F9DF-37F0-4CEF-9370-5A151FA97FBD}.Release|x86.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -5,11 +5,11 @@ namespace ExpressionEvaluator.CodeAnalysis
 {
     internal class ExplresionDeclaracion : Expresion
     {
-        private Token TipoDato;
-        private Token Identificador;
-        private Token TokenIgual;
-        private Expresion Expresion;
-        private Token PuntoyComa;
+        public Token TipoDato;
+        public Token Identificador;
+        public Token TokenIgual;
+        public Expresion Expresion;
+        public Token PuntoyComa;
 
         public ExplresionDeclaracion(Token tipoDato, Token identificador
             , Token tokenIgual, Expresion expresion, Token puntoyComa)

@@ -20,6 +20,7 @@ namespace ExpressionEvaluator.CodeAnalysis
         public Dictionary<String, Pair<Object, List<Token>>> functionsMap;
         public long LexTimeTaken { get; set; }
         public List<Expresion> Salida { get; set; }
+        public Sentencias ListaExpresiones { get; set; }
         public AnalizadorSintactico(string text)
         {
             Salida = new List<Expresion>();
