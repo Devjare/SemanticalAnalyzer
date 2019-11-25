@@ -1,7 +1,9 @@
 
 using SemanticalAnalyzer.CodeAnalysis;
+using SemanticalAnalyzer.CodeAnalysis.Expresiones_Individuales;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace ExpressionEvaluator.CodeAnalysis
 {
@@ -11,7 +13,9 @@ namespace ExpressionEvaluator.CodeAnalysis
         public Dictionary<String, Object> TablaSimbolos { get; set; }
         public Dictionary<String, Object> TablaSintaxis { get; set; }
         public List<String> Diagnostico;
+        public List<String> Salida;
         public List<Token> TokenList;
+        public long SintaxTimeTaken, LexTimeTaken;
         public Evaluador(Expresion raiz, Dictionary<String, Object> tablaSimbolos) : this(raiz)
         {
             TablaSimbolos = tablaSimbolos;
@@ -25,38 +29,23 @@ namespace ExpressionEvaluator.CodeAnalysis
         {
             TablaSimbolos = new Dictionary<String, Object>();
             Diagnostico = new List<String>();
+            Salida = new List<string>();
             TablaSintaxis = new Dictionary<string, object>();
         }
         public List<Token> ListaExpresiones;
         public List<String> Evaluar(String codigo)
         {
             var parser = new AnalizadorSintactico(codigo);
+            LexTimeTaken = parser.LexTimeTaken;
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
             var arbol = parser.Analizar();
+
             TokenList = parser.TokenList;
 
             ListaExpresiones = new List<Token>();
-
-            //for (int i = 0; i < TokenList.Count; i++)
-            //{
-            //    if (TokenList[i].Tipo == TipoSintaxis.IntegerKeyword || 
-            //        TokenList[i].Tipo == TipoSintaxis.FloatKeyword ||
-            //        TokenList[i].Tipo == TipoSintaxis.StringKeyword)
-            //    {
-            //        // Current int
-            //        // i++ -> Current =
-            //        // i++ -> Current Identifier/Number.
-            //        // i++ -> Current ;
-            //        var id = TokenList[i++];
-            //        i++;// Equals token.
-            //        var actual = TokenList[++i];
-            //        while (actual.Tipo != TipoSintaxis.TokenPuntoyComa)
-            //        {
-            //            ListaExpresiones.Add(actual);
-            //            actual = TokenList[++i];
-            //        }
-            //    }
-            //}
-
 
             // Agregamos los errores sintacticos.
             Diagnostico.AddRange(arbol.Diagnostico);
@@ -64,6 +53,7 @@ namespace ExpressionEvaluator.CodeAnalysis
             // Generate Symbols table
             var tablaSimbolosSintactica = TablaSintaxis = parser.TablaSimbolos;
 
+            // Evaluacion de expresiones en asignaciones.
             foreach (var registro in tablaSimbolosSintactica)
             {
                 var token = (Token)registro.Value;
@@ -79,7 +69,7 @@ namespace ExpressionEvaluator.CodeAnalysis
 
                     try
                     {
-                        var result = EvaluarExpresionAritmetica((Expresion)token.Value, token.Tipo);
+                        var result = EvaluarExpresionAritmetica((Expresion)token.Value);
                         if ((result as Token).Tipo == TipoSintaxis.TokenInvalido)
                         {
                             continue;
@@ -89,14 +79,14 @@ namespace ExpressionEvaluator.CodeAnalysis
                     }
                     catch (Exception ex)
                     {
-                        
+
                     }
                 }
-                else if(token.Tipo == TipoSintaxis.BoolKeyword)
-                {
-                    var result = EvaluarExpresionLogica((Expresion)token.Value);
-                    this.TablaSimbolos[registro.Key] = result;
-                }
+                //else if (token.Tipo == TipoSintaxis.BoolKeyword)
+                //{
+                //    var result = EvaluarExpresionLogica((Expresion)token.Value);
+                //    this.TablaSimbolos[registro.Key] = result;
+                //}
                 else if (token.Tipo == TipoSintaxis.StringKeyword)
                 {
                     if (token.Value is ExpresionStringInvalida)
@@ -109,18 +99,41 @@ namespace ExpressionEvaluator.CodeAnalysis
 
             }
 
+            // TODO Evaluacion de expresiones en estructuras if y while.
+
+            // Evaluacion de expresiones en llamadas a println()
+            var listaExpresionesImpresion = parser.Salida;
+
+            foreach (var expresion in listaExpresionesImpresion)
+            {
+                if (expresion is ExpresionString expStr)
+                {
+                    var resultado = EvaluarExpresionString(expStr);
+                    Salida.Add(resultado.Value.ToString());
+                }
+
+                if (expresion is ExpresionBinaria expBin)
+                {
+                    var izq = expBin.Izquierda;
+                    if (izq != null && izq is ExpresionString)
+                    {
+                        var resultado = EvaluarExpresionString(expBin);
+                        Salida.Add(resultado.Value.ToString());
+                    }
+                    else if (izq != null && (izq is ExpresionEntera || izq is ExpresionDecimal))
+                    {
+                        var resultado = EvaluarExpresionAritmetica(expBin);
+                        Salida.Add(resultado.Value.ToString());
+                    }
+                }
+            }
+
+            stopwatch.Stop();
+            SintaxTimeTaken = stopwatch.ElapsedMilliseconds;
+
             return Diagnostico;
         }
 
-
-        // Este metodo revisara que los tipos de las declaraciones sean correctos.
-        private void TableLookup()
-        {
-            foreach (var item in TablaSimbolos)
-            {
-
-            }
-        }
 
         public Token EvaluarExpresionString(Expresion nodo)
         {
@@ -130,7 +143,7 @@ namespace ExpressionEvaluator.CodeAnalysis
                 var tokenString = new Token(TipoSintaxis.TokenInteger, 0, valor, valor);
                 return tokenString;
             }
-                        
+
             if (nodo is ExpresionIdentificador id)
             {
                 var identificador = id.Identificador;
@@ -160,7 +173,7 @@ namespace ExpressionEvaluator.CodeAnalysis
                     string result = izquierda.Value.ToString() + derecha.Value.ToString();
                     return new Token(TipoSintaxis.TokenString, 0, result, result);
                 }
-                                
+
                 else
                     throw new Exception($"Operador binario inesperado: {b.Operador.Tipo}");
             }
@@ -171,7 +184,7 @@ namespace ExpressionEvaluator.CodeAnalysis
             throw new Exception($"Nodo inesperado {nodo.Tipo}");
         }
 
-        public Token EvaluarExpresionAritmetica(Expresion nodo, TipoSintaxis tipo)
+        public Token EvaluarExpresionAritmetica(Expresion nodo)
         {
             if (nodo is ExpresionNumericaInvalida invalidExpression)
             {
@@ -195,7 +208,7 @@ namespace ExpressionEvaluator.CodeAnalysis
 
             if (nodo is ExpresionDecimal nd)
             {
-                float valor = (float) nd.Numero.Value;
+                float valor = (float)nd.Numero.Value;
                 var tokenDecimal = new Token(TipoSintaxis.TokenDecimal, 0, valor.ToString(), valor);
                 return tokenDecimal;
             }
@@ -231,8 +244,8 @@ namespace ExpressionEvaluator.CodeAnalysis
 
             if (nodo is ExpresionBinaria b)
             {
-                var izquierda = EvaluarExpresionAritmetica(b.Izquierda, tipo);
-                var derecha = EvaluarExpresionAritmetica(b.Derecha, tipo);
+                var izquierda = EvaluarExpresionAritmetica(b.Izquierda);
+                var derecha = EvaluarExpresionAritmetica(b.Derecha);
 
                 if (b.Operador.Tipo == TipoSintaxis.TokenMas)
                 {
@@ -319,37 +332,79 @@ namespace ExpressionEvaluator.CodeAnalysis
             }
 
             if (nodo is ExpresionEnParentesis p)
-                return EvaluarExpresionAritmetica(p.Expresion, tipo);
+                return EvaluarExpresionAritmetica(p.Expresion);
 
             throw new Exception($"Nodo inesperado {nodo.Tipo}");
         }
 
-        private bool EvaluarExpresionLogica(Expresion nodo)
-        {
-            if (nodo is ExpresionBool n)
-                return Boolean.Parse(n.TokenBool.Value.ToString());
+        //private bool EvaluarExpresionLogica(Expresion nodo)
+        //{
+        //    if (nodo is ExpresionLogica n)
+        //        return Boolean.Parse(n.token.Value.ToString());
 
-            if (nodo is ExpresionBinaria b)
-            {
-                var izquierda = EvaluarExpresionLogica(b.Izquierda);
-                var derecha = EvaluarExpresionLogica(b.Derecha);
+        //    if (nodo is ExpresionRelacional relExp)
+        //    {
+        //        var izq = relExp.Izquierda;
+        //        var der = relExp.Derecha;
 
-                if (b.Operador.Tipo == TipoSintaxis.TokenAnd)
-                    return izquierda && derecha;
-                else if (b.Operador.Tipo == TipoSintaxis.TokenOr)
-                    return izquierda || derecha;
-                else if (b.Operador.Tipo == TipoSintaxis.TokenIgualIgual)
-                    return izquierda == derecha;
-                else if (b.Operador.Tipo == TipoSintaxis.TokenNotIgual)
-                    return izquierda != derecha;
-                else
-                    throw new Exception($"Operador binario inesperado: {b.Operador.Tipo}");
-            }
+        //        if (izq.Tipo == TipoSintaxis.ExpresionIdentificador)
+        //        {
+        //            var expIdent = izq as ExpresionIdentificador;
+        //            var identificador = izq;
+        //            var tokenString = (TablaSimbolos[identificador.Value.ToString()] as Token).Value;
 
-            if (nodo is ExpresionEnParentesis p)
-                return EvaluarExpresionLogica(p.Expresion);
+        //            if (!TablaSimbolos.ContainsKey(identificador.Value.ToString()))
+        //            {
+        //                Diagnostico.Add($"ERROR: Variable no declarada <{identificador}>");
+        //            }
+        //            else if (!(tokenString is null))
+        //            {
+        //                return new Token(TipoSintaxis.TokenString, 0, tokenString.ToString(), tokenString.ToString());
+        //            }
+        //        }
 
-            throw new Exception($"Nodo inesperado {nodo.Tipo}");
-        }
+        //        if (relExp.Tipo == TipoSintaxis.ExpresionEntera)
+        //        {
+
+        //        }
+        //        if (relExp.Tipo == TipoSintaxis.ExpresionDecimal)
+        //        {
+
+        //        }
+        //        if (relExp.Tipo == TipoSintaxis.ExpresionStirng)
+        //        {
+
+        //        }
+        //        if (relExp.Tipo == TipoSintaxis.ExpresionLogica)
+        //        {
+
+        //        }
+        //        {
+        //            // 
+        //        }
+        //    }
+
+        //    if (nodo is ExpresionBooleana b)
+        //    {
+        //        var izquierda = EvaluarExpresionLogica(b.Izquierda);
+        //        var derecha = EvaluarExpresionLogica(b.Derecha);
+
+        //        if (b.Operador.Tipo == TipoSintaxis.TokenAnd)
+        //            return izquierda && derecha;
+        //        else if (b.Operador.Tipo == TipoSintaxis.TokenOr)
+        //            return izquierda || derecha;
+        //        else if (b.Operador.Tipo == TipoSintaxis.TokenIgualIgual)
+        //            return izquierda == derecha;
+        //        else if (b.Operador.Tipo == TipoSintaxis.TokenNotIgual)
+        //            return izquierda != derecha;
+        //        else
+        //            throw new Exception($"Operador binario inesperado: {b.Operador.Tipo}");
+        //    }
+
+        //    if (nodo is ExpresionEnParentesis p)
+        //        return EvaluarExpresionLogica(p.Expresion);
+
+        //    throw new Exception($"Nodo inesperado {nodo.Tipo}");
+        //}
     }
 }

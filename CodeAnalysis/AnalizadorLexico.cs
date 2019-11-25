@@ -8,7 +8,6 @@ namespace ExpressionEvaluator.CodeAnalysis
         private readonly string _texto;
         private int _posicion;
         private List<string> _diagnostico = new List<string>();
-
         public AnalizadorLexico(string texto)
         {
             _texto = texto;
@@ -38,11 +37,6 @@ namespace ExpressionEvaluator.CodeAnalysis
             {
                 return new Token(TipoSintaxis.TokenEOF, _posicion, "\0", null);
             }
-
-            // Implement for decimal pointing numebrs
-            // And make the new Expression Syntax class for
-            // that entry
-            // Find if the token is a Number
 
             if (CaracterActual == '-' && char.IsDigit(_texto[_posicion + 1]))
             {
@@ -208,6 +202,18 @@ namespace ExpressionEvaluator.CodeAnalysis
                     return new Token(TipoSintaxis.TokenBool, inicio, "BoolToken", texto);
                 if (texto == "main")
                     return new Token(TipoSintaxis.TokenFuncionMain, inicio, "TokenFuncionMain", texto);
+                if (texto == "if")
+                {
+                    return new Token(TipoSintaxis.TokenIf, inicio, "TokenIf", texto);
+                }
+                if (texto == "else")
+                {
+                    return new Token(TipoSintaxis.TokenElse, inicio, "TokenElse", texto);
+                }
+                if (texto == "println")
+                {
+                    return new Token(TipoSintaxis.TokenPrintln, inicio, "TokenPrintln", texto);
+                }
 
                 return new Token(TipoSintaxis.Identificador, inicio, "Identifier", texto);
             }

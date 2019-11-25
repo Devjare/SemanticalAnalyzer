@@ -7,20 +7,14 @@ using System.Threading.Tasks;
 
 namespace SemanticalAnalyzer.CodeAnalysis
 {
-    class ExpresionMain : Expresion
+    class ExpresionMain : ExpresionBloqueCodigo
     {
 
-
-        public ExpresionMain()
-        {
-        }
-
-        public ExpresionMain(Token parentesisApertura, Token parentesisCierre, Token llaveApertura, List<Expresion> expresiones, Token llaveCierre)
+        public ExpresionMain(Token parentesisApertura, Token parentesisCierre, Token llaveApertura, List<Expresion> expresiones, Token llaveCierre) : base(expresiones)
         {
             ParentesisApertura = parentesisApertura;
             ParentesisCierre = parentesisCierre;
             LlaveApertura = llaveApertura;
-            Expresiones = expresiones;
             LlaveCierre = llaveCierre;
         }
 

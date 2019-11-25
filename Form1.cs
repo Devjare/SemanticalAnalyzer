@@ -1,4 +1,4 @@
-﻿using ExpressionEvaluator.CodeAnalysis;
+using ExpressionEvaluator.CodeAnalysis;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

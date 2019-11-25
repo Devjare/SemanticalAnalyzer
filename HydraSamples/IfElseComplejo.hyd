@@ -1,0 +1,13 @@
+﻿void main(){
+	int a = 10;
+	int b = 14;
+
+	if(a > 12 & ("Hola" == "hola") & a < 12 | "" != ""){
+		int suma = a + b;
+		print("Hola" + suma);
+	}
+	else{
+		int resta = a - b;
+		print(resta + " - hola");
+	}
+}

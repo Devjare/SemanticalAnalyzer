@@ -70,7 +70,14 @@ namespace ExpressionEvaluator.CodeAnalysis
         TokenNumericoInvalido,
         ExpresionStirng,
         ExpresionStringInvalida,
-        ExpresionInvalida
+        ExpresionInvalida,
+        TokenIf,
+        TokenElse,
+        TokenElseInvalido,
+        TokenIfInvalido,
+        ExpresionLogica,
+        TokenPrintln,
+        ExpresionFuncionPrintln
     }
 
 }

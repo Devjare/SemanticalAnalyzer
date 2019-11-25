@@ -7,16 +7,15 @@ using System.Threading.Tasks;
 
 namespace SemanticalAnalyzer.CodeAnalysis
 {
-    class ExpresionIf : Expresion
+    class ExpresionIf : ExpresionBloqueCodigo
     {
         public ExpresionIf(Token parentesisApertura, Expresion expresion, 
-            Token parentesisCierre, Token llaveApertura, List<Expresion> expresiones, Token llaveCierre)
+            Token parentesisCierre, Token llaveApertura, List<Expresion> expresiones, Token llaveCierre) : base(expresiones)
         {
             ParentesisApertura = parentesisApertura;
             Expresion = expresion;
             ParentesisCierre = parentesisCierre;
             LlaveApertura = llaveApertura;
-            Expresiones = expresiones;
             LlaveCierre = llaveCierre;
         }
 
@@ -24,7 +23,6 @@ namespace SemanticalAnalyzer.CodeAnalysis
         public Expresion Expresion { get;  }
         public Token ParentesisCierre { get; }
         public Token LlaveApertura { get; }
-        public List<Expresion> Expresiones { get; }
         public Token LlaveCierre { get; }
 
         public override TipoSintaxis Tipo { get => TipoSintaxis.ExpresionIf; }
@@ -35,10 +33,6 @@ namespace SemanticalAnalyzer.CodeAnalysis
             yield return Expresion;
             yield return ParentesisCierre;
             yield return LlaveApertura;
-            foreach (var item in Expresiones)
-            {
-                yield return item;
-            }
             yield return LlaveCierre;
         }
     }

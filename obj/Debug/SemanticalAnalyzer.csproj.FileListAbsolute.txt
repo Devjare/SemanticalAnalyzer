@@ -4,7 +4,6 @@ C:\Users\jandr\source\repos\SemanticalAnalyzer\bin\Debug\SemanticalAnalyzer.pdb
 C:\Users\jandr\source\repos\SemanticalAnalyzer\obj\Debug\SemanticalAnalyzer.Form1.resources
 C:\Users\jandr\source\repos\SemanticalAnalyzer\obj\Debug\SemanticalAnalyzer.Properties.Resources.resources
 C:\Users\jandr\source\repos\SemanticalAnalyzer\obj\Debug\SemanticalAnalyzer.csproj.GenerateResource.cache
-C:\Users\jandr\source\repos\SemanticalAnalyzer\obj\Debug\SemanticalAnalyzer.csproj.CoreCompileInputs.cache
 C:\Users\jandr\source\repos\SemanticalAnalyzer\obj\Debug\SemanticalAnalyzer.exe
 C:\Users\jandr\source\repos\SemanticalAnalyzer\obj\Debug\SemanticalAnalyzer.pdb
 C:\Users\jandr\source\repos\SemanticalAnalyzer\obj\Debug\SemanticalAnalyzer.csprojAssemblyReference.cache

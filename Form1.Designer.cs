@@ -630,6 +630,6 @@
         private System.Windows.Forms.Panel panelFileManager;
         private System.Windows.Forms.TreeView treeView1;
         private System.Windows.Forms.RichTextBox LineNumberTextBox;
+        
     }
 }
-
