@@ -8,10 +8,11 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>SemanticalAnalyzer</RootNamespace>
     <AssemblyName>SemanticalAnalyzer</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -46,17 +47,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="carga.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="carga.Designer.cs">
+      <DependentUpon>carga.cs</DependentUpon>
+    </Compile>
     <Compile Include="CodeAnalysis\ExpresionAsignacion.cs" />
     <Compile Include="CodeAnalysis\ExpresionBinaria.cs" />
+    <Compile Include="CodeAnalysis\ExpresionBloqueCodigo.cs" />
     <Compile Include="CodeAnalysis\ExpresionBool.cs" />
     <Compile Include="CodeAnalysis\ExpresionDecimal.cs" />
     <Compile Include="CodeAnalysis\ExpresionDeclaracion.cs" />
+    <Compile Include="CodeAnalysis\ExpresionElseInvalida.cs" />
     <Compile Include="CodeAnalysis\ExpresionIdentificador.cs" />
     <Compile Include="CodeAnalysis\ExpresionIf.cs" />
+    <Compile Include="CodeAnalysis\ExpresionIfInvalida.cs" />
     <Compile Include="CodeAnalysis\ExpresionInvalida.cs" />
     <Compile Include="CodeAnalysis\ExpresionNumericaInvalida.cs" />
     <Compile Include="CodeAnalysis\ExpresionString.cs" />
     <Compile Include="CodeAnalysis\ExpresionStringInvalida.cs" />
+    <Compile Include="CodeAnalysis\Pair.cs" />
     <Compile Include="CodeAnalysis\Sentencias.cs" />
     <Compile Include="CodeAnalysis\Evaluador.cs" />
     <Compile Include="CodeAnalysis\Expresion.cs" />
@@ -82,6 +93,9 @@
     <Compile Include="PresentadorCuadruplos.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="carga.resx">
+      <DependentUpon>carga.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -93,7 +107,12 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="HydraSamples\forloop.hyd" />
+    <None Include="HydraSamples\FuncionAddition.hyd" />
+    <None Include="HydraSamples\readAndCompare.hdy" />
+    <None Include="HydraSamples\readFromKeyboard.hyd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -108,7 +127,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="KaasSamples\Addition.kaas.txt" />
+    <Content Include="HydraSamples\Addition.kaas.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
