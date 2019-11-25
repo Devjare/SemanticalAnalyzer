@@ -15,14 +15,16 @@ namespace SemanticalAnalyzer
 {
     public partial class Form1 : Form
     {
+        bool CambiosNoGuardados;
         public Form1()
         {
             InitializeComponent();
+            CambiosNoGuardados = true;
         }
 
         private void TxtCode_TextChanged(object sender, EventArgs e)
         {
-            filesTabControl.TabPages[0].Text = "New File... *";        
+            filesTabControl.TabPages[0].Text = "New File... *";
         }
 
         private void AbrirToolStripMenuItem_Click(object sender, EventArgs e)
@@ -30,8 +32,9 @@ namespace SemanticalAnalyzer
             try
             {
                 OpenNewFile();
+                CambiosNoGuardados = true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"Exception ocurred: {ex.Message}");
             }
@@ -41,14 +44,15 @@ namespace SemanticalAnalyzer
         {
 
             var dialog = new OpenFileDialog();
-            dialog.Filter = "All Files (*.HYD)|*.hyd";
+            dialog.Filter = "All Files (*.hyd)|*.hyd";
             dialog.FilterIndex = 1;
             dialog.Multiselect = true;
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 var path = dialog.FileName;
-                
+                filesTabControl.TabPages[0].Text = dialog.FileName;
+
                 // string[] arrAllFiles = dialog.FileNames; //used when Multiselect = true           
 
                 // Open the stream and read it back.
@@ -59,39 +63,18 @@ namespace SemanticalAnalyzer
 
                     while (fs.Read(b, 0, b.Length) > 0)
                     {
-                        txtCode.AppendText(temp.GetString(b));
-                        txtCode.AppendText(Environment.NewLine);
+                        richTextBox1.AppendText(temp.GetString(b));
+                        richTextBox1.AppendText(Environment.NewLine);
                     }
                 }
 
             }
         }
-        
+
         private void TxtCode_KeyDown(object sender, KeyEventArgs e)
 
         {
-            if (e.KeyCode == Keys.Enter)
-            {
-                TxtLineNumbers_Repaint();
-            }
-            else if (e.KeyCode == Keys.Back)
-            {
-                TxtLineNumbers_Repaint();
-            }
-        }
 
-        private void TxtLineNumbers_Repaint()
-        {
-            txtLineNumbers.Clear();
-            var lines = txtCode.Lines;
-
-            for (int i = 1; i <= lines.Length + 1; i++)
-            {
-                txtLineNumbers.AppendText(i.ToString());
-                txtLineNumbers.AppendText(Environment.NewLine);
-            }
-
-            txtLineNumbers.Update();
         }
 
         Dictionary<String, Object> SymbolsTable { get; set; }
@@ -107,26 +90,60 @@ namespace SemanticalAnalyzer
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            
-            var diagnostics = evaluator.Evaluar(txtCode.Text);
-            
-            stopwatch.Stop();            
+
+            var diagnostics = evaluator.Evaluar(richTextBox1.Text);
+
+            stopwatch.Stop();
             var secondsElapsed = stopwatch.ElapsedMilliseconds;
-            
+
             MessageBox.Show($"Tiempo total Compilacion: {secondsElapsed}ms, \n\r" +
                 $"Tiempo Analisis Lexico: {evaluator.LexTimeTaken}ms \n\r" +
                 $"Tiempo Analisis Sintactico: {evaluator.SintaxTimeTaken}ms \n\r");
 
             this.SymbolsTable = evaluator.TablaSimbolos;
-            
-    
             foreach (var diagnostic in diagnostics)
             {
                 txtLog.Text += diagnostic + Environment.NewLine;
             }
             ShowSymbolsTable();
+            if (evaluator.Salida.Count > 0)
+            {
+                MostrarResultadosImpresiones(evaluator.Salida);
+            }
             var presentadorCuadruplos = new PersentadorCuadruplos(evaluator.TablaSintaxis);
             MostrarTablaCuadruplos(presentadorCuadruplos.Procesar());
+        }
+
+        private void MostrarResultadosImpresiones(List<string> salida)
+        {
+            tcLogOutput.SelectedTab = tcLogOutput.TabPages[1];
+
+            txtOutput.Clear();
+
+            salida.ForEach(item => 
+            {
+                txtOutput.Text += $"{item}{Environment.NewLine}";
+            });
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+
+            if (CambiosNoGuardados)
+            {
+                var result = MessageBox.Show("Desea salir sin guardar los cambios?", "Cambios no guardados", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+                if (result == DialogResult.Yes)
+                {
+                    Application.Exit();
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            Application.Exit();
         }
 
         private void MostrarTablaCuadruplos(Dictionary<String, String> dict)
@@ -175,10 +192,10 @@ namespace SemanticalAnalyzer
                 nodeToAddTo.Nodes.Add(aNode);
             }
         }
-// evento del arbol
+        // evento del arbol
         private void TreeView1_MouseClick(object sender, MouseEventArgs e)
         {
-            
+
         }
 
         private void BtnSymbols_Click(object sender, EventArgs e)
@@ -225,6 +242,162 @@ namespace SemanticalAnalyzer
         private void TreeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
 
+        }
+
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void tableLayoutPanel1_Paint_1(object sender, PaintEventArgs e)
+        {
+
+        }
+        private void button3_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog save = new SaveFileDialog();
+            save.FileName = "prueba.txt";
+            // filtros
+            save.Filter = "All Files(*.hyd) | *.hyd";
+            if (save.ShowDialog() == DialogResult.OK)
+            {
+                richTextBox1.SaveFile(save.FileName, RichTextBoxStreamType.PlainText);
+            }
+        }
+        private void button4_Click(object sender, EventArgs e)
+        {
+            Compile();
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                OpenNewFile();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception ocurred: {ex.Message}");
+            }
+        }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                OpenNewFile();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception ocurred: {ex.Message}");
+            }
+        }
+        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        {
+            if (CambiosNoGuardados)
+            {
+                CambiosNoGuardados = false;
+                filesTabControl.TabPages[0].Text += "*";
+            }
+            if (richTextBox1.Text == "")
+            {
+                AddLineNumbers();
+            }
+        }
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            TreeNode tNode;
+            tNode = treeView1.Nodes.Add("HYDRA");
+
+            treeView1.Nodes[0].Nodes.Add("Programas");
+            treeView1.Nodes[0].Nodes[0].Nodes.Add("Archivos");
+
+            treeView1.Nodes[0].Nodes.Add("Compilador");
+            treeView1.Nodes[0].Nodes[1].Nodes.Add("Lexico");
+            treeView1.Nodes[0].Nodes[1].Nodes.Add("Sintactico");
+            treeView1.Nodes[0].Nodes[1].Nodes.Add("Semantico");
+
+            treeView1.Nodes[0].Nodes.Add("Interfaz");
+            treeView1.Nodes[0].Nodes[2].Nodes.Add("Visual Studio");
+            treeView1.Nodes[0].Nodes[2].Nodes[0].Nodes.Add("C#");
+
+            LineNumberTextBox.Font = richTextBox1.Font;
+            richTextBox1.Select();
+            AddLineNumbers();
+        }
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            AddLineNumbers();
+        }
+        private void richTextBox1_SelectionChanged(object sender, EventArgs e)
+        {
+            Point pt = richTextBox1.GetPositionFromCharIndex(richTextBox1.SelectionStart);
+            if (pt.X == 1)
+            {
+                AddLineNumbers();
+            }
+        }
+        private void richTextBox1_VScroll(object sender, EventArgs e)
+        {
+            Point pt = richTextBox1.GetPositionFromCharIndex(richTextBox1.SelectionStart);
+            if (pt.X == 1)
+            {
+                AddLineNumbers();
+            }
+        }
+        private void richTextBox1_FontChanged(object sender, EventArgs e)
+        {
+            LineNumberTextBox.Font = richTextBox1.Font;
+            richTextBox1.Select();
+            AddLineNumbers();
+        }
+        private void LineNumberTextBox_MouseDown(object sender, MouseEventArgs e)
+        {
+            richTextBox1.Select();
+            LineNumberTextBox.DeselectAll();
+        }
+        public int getWidth()
+        {
+            int w = 25;
+            // get total lines of richTextBox1    
+            int line = richTextBox1.Lines.Length;
+
+            if (line <= 99)
+            {
+                w = 20 + (int)richTextBox1.Font.Size;
+            }
+            else if (line <= 999)
+            {
+                w = 30 + (int)richTextBox1.Font.Size;
+            }
+            else
+            {
+                w = 50 + (int)richTextBox1.Font.Size;
+            }
+
+            return w;
+        }
+        public void AddLineNumbers()
+        {
+            // create & set Point pt to (0,0)    
+            Point pt = new Point(0, 0);
+            // get First Index & First Line from richTextBox1    
+            int First_Index = richTextBox1.GetCharIndexFromPosition(pt);
+            int First_Line = richTextBox1.GetLineFromCharIndex(First_Index);
+            // set X & Y coordinates of Point pt to ClientRectangle Width & Height respectively    
+            pt.X = ClientRectangle.Width;
+            pt.Y = ClientRectangle.Height;
+            // get Last Index & Last Line from richTextBox1    
+            int Last_Index = richTextBox1.GetCharIndexFromPosition(pt);
+            int Last_Line = richTextBox1.GetLineFromCharIndex(Last_Index);
+            // set Center alignment to LineNumberTextBox    
+            LineNumberTextBox.SelectionAlignment = HorizontalAlignment.Center;
+            // set LineNumberTextBox text to null & width to getWidth() function value    
+            LineNumberTextBox.Text = "";
+            LineNumberTextBox.Width = getWidth();
+            // now add each line number to LineNumberTextBox upto last line    
+            for (int i = First_Line; i <= Last_Line + 2; i++)
+            {
+                LineNumberTextBox.Text += i + 1 + "\n";
+            }
         }
     }
 }
