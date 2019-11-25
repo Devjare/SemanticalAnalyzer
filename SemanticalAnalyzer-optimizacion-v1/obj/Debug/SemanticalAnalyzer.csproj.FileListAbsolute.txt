@@ -1,0 +1,17 @@
+C:\Users\jandr\source\repos\SemanticalAnalyzer\bin\Debug\SemanticalAnalyzer.exe.config
+C:\Users\jandr\source\repos\SemanticalAnalyzer\bin\Debug\SemanticalAnalyzer.exe
+C:\Users\jandr\source\repos\SemanticalAnalyzer\bin\Debug\SemanticalAnalyzer.pdb
+C:\Users\jandr\source\repos\SemanticalAnalyzer\obj\Debug\SemanticalAnalyzer.Form1.resources
+C:\Users\jandr\source\repos\SemanticalAnalyzer\obj\Debug\SemanticalAnalyzer.Properties.Resources.resources
+C:\Users\jandr\source\repos\SemanticalAnalyzer\obj\Debug\SemanticalAnalyzer.csproj.GenerateResource.cache
+C:\Users\jandr\source\repos\SemanticalAnalyzer\obj\Debug\SemanticalAnalyzer.exe
+C:\Users\jandr\source\repos\SemanticalAnalyzer\obj\Debug\SemanticalAnalyzer.pdb
+C:\Users\jandr\source\repos\SemanticalAnalyzer\obj\Debug\SemanticalAnalyzer.csprojAssemblyReference.cache
+C:\Users\qiqeo_000\Desktop\karla\7\automatas\SemanticalAnalyzer-optimizacion-v1\obj\Debug\SemanticalAnalyzer.csprojAssemblyReference.cache
+C:\Users\qiqeo_000\Desktop\karla\7\automatas\SemanticalAnalyzer-optimizacion-v1\obj\Debug\SemanticalAnalyzer.carga.resources
+C:\Users\qiqeo_000\Desktop\karla\7\automatas\SemanticalAnalyzer-optimizacion-v1\obj\Debug\SemanticalAnalyzer.Form1.resources
+C:\Users\qiqeo_000\Desktop\karla\7\automatas\SemanticalAnalyzer-optimizacion-v1\obj\Debug\SemanticalAnalyzer.Properties.Resources.resources
+C:\Users\qiqeo_000\Desktop\karla\7\automatas\SemanticalAnalyzer-optimizacion-v1\obj\Debug\SemanticalAnalyzer.csproj.GenerateResource.cache
+C:\Users\qiqeo_000\Desktop\karla\7\automatas\SemanticalAnalyzer-optimizacion-v1\obj\Debug\SemanticalAnalyzer.csproj.CoreCompileInputs.cache
+C:\Users\qiqeo_000\Desktop\karla\7\automatas\SemanticalAnalyzer-optimizacion-v1\obj\Debug\SemanticalAnalyzer.exe
+C:\Users\qiqeo_000\Desktop\karla\7\automatas\SemanticalAnalyzer-optimizacion-v1\obj\Debug\SemanticalAnalyzer.pdb

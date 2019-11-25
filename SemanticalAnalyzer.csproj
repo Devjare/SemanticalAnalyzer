@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -8,10 +8,11 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>SemanticalAnalyzer</RootNamespace>
     <AssemblyName>SemanticalAnalyzer</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -46,40 +47,41 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CodeAnalysis\Expresiones\ExpresionAsignacion.cs" />
-    <Compile Include="CodeAnalysis\Expresiones\ExpresionBinaria.cs" />
-    <Compile Include="CodeAnalysis\Expresiones\ExpresionBloqueCodigo.cs" />
-    <Compile Include="CodeAnalysis\Expresiones\ExpresionBooleana.cs" />
-    <Compile Include="CodeAnalysis\Expresiones Individuales\ExpresionDecimal.cs" />
-    <Compile Include="CodeAnalysis\Expresiones\ExpresionDeclaracion.cs" />
-    <Compile Include="CodeAnalysis\Expresiones\ExpresionElse.cs" />
-    <Compile Include="CodeAnalysis\Expresiones\Invalidas\ExpresionElseInvalida.cs" />
-    <Compile Include="CodeAnalysis\Expresiones Individuales\ExpresionIdentificador.cs" />
-    <Compile Include="CodeAnalysis\Expresiones\ExpresionIndividual.cs" />
-    <Compile Include="CodeAnalysis\Expresiones Individuales\ExpresionLogica.cs" />
-    <Compile Include="CodeAnalysis\Expresiones\ExpresionIf.cs" />
-    <Compile Include="CodeAnalysis\Expresiones\Invalidas\ExpresionIfInvalida.cs" />
-    <Compile Include="CodeAnalysis\Expresiones\Invalidas\ExpresionInvalida.cs" />
-    <Compile Include="CodeAnalysis\Expresiones\Invalidas\ExpresionNumericaInvalida.cs" />
-    <Compile Include="CodeAnalysis\Expresiones\ExpresionRelacional.cs" />
-    <Compile Include="CodeAnalysis\Expresiones Individuales\ExpresionString.cs" />
-    <Compile Include="CodeAnalysis\Expresiones\Invalidas\ExpresionStringInvalida.cs" />
-    <Compile Include="CodeAnalysis\ExpresionFuncionPrintln.cs" />
+    <Compile Include="carga.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="carga.Designer.cs">
+      <DependentUpon>carga.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CodeAnalysis\ExpresionAsignacion.cs" />
+    <Compile Include="CodeAnalysis\ExpresionBinaria.cs" />
+    <Compile Include="CodeAnalysis\ExpresionBloqueCodigo.cs" />
+    <Compile Include="CodeAnalysis\ExpresionBool.cs" />
+    <Compile Include="CodeAnalysis\ExpresionDecimal.cs" />
+    <Compile Include="CodeAnalysis\ExpresionDeclaracion.cs" />
+    <Compile Include="CodeAnalysis\ExpresionElseInvalida.cs" />
+    <Compile Include="CodeAnalysis\ExpresionIdentificador.cs" />
+    <Compile Include="CodeAnalysis\ExpresionIf.cs" />
+    <Compile Include="CodeAnalysis\ExpresionIfInvalida.cs" />
+    <Compile Include="CodeAnalysis\ExpresionInvalida.cs" />
+    <Compile Include="CodeAnalysis\ExpresionNumericaInvalida.cs" />
+    <Compile Include="CodeAnalysis\ExpresionString.cs" />
+    <Compile Include="CodeAnalysis\ExpresionStringInvalida.cs" />
     <Compile Include="CodeAnalysis\Pair.cs" />
     <Compile Include="CodeAnalysis\Sentencias.cs" />
-    <Compile Include="Evaluacion\Evaluador.cs" />
-    <Compile Include="CodeAnalysis\Expresiones\Expresion.cs" />
+    <Compile Include="CodeAnalysis\Evaluador.cs" />
+    <Compile Include="CodeAnalysis\Expresion.cs" />
     <Compile Include="CodeAnalysis\AnalizadorLexico.cs" />
-    <Compile Include="CodeAnalysis\Expresiones\ExpresionMain.cs" />
-    <Compile Include="CodeAnalysis\Expresiones Individuales\ExpresionEntera.cs" />
-    <Compile Include="CodeAnalysis\Expresiones\ExpresionEnParentesis.cs" />
+    <Compile Include="CodeAnalysis\ExpresionMain.cs" />
+    <Compile Include="CodeAnalysis\ExpresionEntera.cs" />
+    <Compile Include="CodeAnalysis\ExpresionEnParentesis.cs" />
     <Compile Include="CodeAnalysis\AnalizadorSintactico.cs" />
     <Compile Include="CodeAnalysis\TipoSintaxis.cs" />
     <Compile Include="CodeAnalysis\NodoSintaxis.cs" />
     <Compile Include="CodeAnalysis\Token.cs" />
     <Compile Include="CodeAnalysis\ArbolSintactico.cs" />
-    <Compile Include="CodeAnalysis\Expresiones\ExpresionUse.cs" />
-    <Compile Include="CodeAnalysis\Expresiones\ExpresionWhile.cs" />
+    <Compile Include="CodeAnalysis\ExpresionUse.cs" />
+    <Compile Include="CodeAnalysis\ExpresionWhile.cs" />
     <Compile Include="Cuadruplo.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -91,6 +93,9 @@
     <Compile Include="PresentadorCuadruplos.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="carga.resx">
+      <DependentUpon>carga.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -102,14 +107,12 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="HydraSamples\forloop.hyd" />
     <None Include="HydraSamples\FuncionAddition.hyd" />
-    <None Include="HydraSamples\IfelseSimple.hyd" />
-    <None Include="HydraSamples\HolaMundo.hyd" />
-    <None Include="HydraSamples\readAndCompare.hyd" />
+    <None Include="HydraSamples\readAndCompare.hdy" />
     <None Include="HydraSamples\readFromKeyboard.hyd" />
-    <None Include="HydraSamples\TextFile1.hyd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -125,7 +128,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="HydraSamples\Addition.kaas.txt" />
-    <None Include="HydraSamples\IfElseComplejo.hyd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
 </Project>

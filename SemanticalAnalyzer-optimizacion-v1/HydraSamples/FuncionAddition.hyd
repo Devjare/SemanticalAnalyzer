@@ -1,0 +1,11 @@
+﻿int suma(int a, int b){
+	return a + b;
+}
+
+main(){
+	int a = 10;
+	int b = 20;
+	int suma = sumar(a, b);
+
+	println("Resultado es: " + suma);
+}
