@@ -55,7 +55,7 @@ namespace ExpressionEvaluator.CodeAnalysis
         CodeExpressionSyntax,
         VoidKeyword,
         ExpresionMain,
-        ExpresionBool,
+        ExpresionBooleana,
         TokenBool,
         ExpresionDeclaracion,
         CharToken,
@@ -77,7 +77,9 @@ namespace ExpressionEvaluator.CodeAnalysis
         TokenIfInvalido,
         ExpresionLogica,
         TokenPrintln,
-        ExpresionFuncionPrintln
+        ExpresionFuncionPrintln,
+        ExpresionRelacional,
+        ExpresionPrintlnInvalida
     }
 
 }

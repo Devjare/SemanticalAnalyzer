@@ -62,6 +62,7 @@
     <Compile Include="CodeAnalysis\Expresiones Individuales\ExpresionDecimal.cs" />
     <Compile Include="CodeAnalysis\Expresiones\ExpresionDeclaracion.cs" />
     <Compile Include="CodeAnalysis\Expresiones\ExpresionElse.cs" />
+    <Compile Include="CodeAnalysis\Expresiones\Invalidas\ExpresionPrintlnInvalida.cs" />
     <Compile Include="CodeAnalysis\Expresiones\Invalidas\ExpresionElseInvalida.cs" />
     <Compile Include="CodeAnalysis\Expresiones Individuales\ExpresionIdentificador.cs" />
     <Compile Include="CodeAnalysis\Expresiones\ExpresionIndividual.cs" />
@@ -73,7 +74,7 @@
     <Compile Include="CodeAnalysis\Expresiones\ExpresionRelacional.cs" />
     <Compile Include="CodeAnalysis\Expresiones Individuales\ExpresionString.cs" />
     <Compile Include="CodeAnalysis\Expresiones\Invalidas\ExpresionStringInvalida.cs" />
-    <Compile Include="CodeAnalysis\ExpresionFuncionPrintln.cs" />
+    <Compile Include="CodeAnalysis\Expresiones\ExpresionFuncionPrintln.cs" />
     <Compile Include="CodeAnalysis\Pair.cs" />
     <Compile Include="CodeAnalysis\Sentencias.cs" />
     <Compile Include="Evaluacion\Evaluador.cs" />

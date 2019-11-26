@@ -11,9 +11,9 @@ C:\Users\jandr\source\repos\Hydra\obj\Debug\SemanticalAnalyzer.Form1.resources
 C:\Users\jandr\source\repos\Hydra\obj\Debug\SemanticalAnalyzer.Properties.Resources.resources
 C:\Users\jandr\source\repos\Hydra\obj\Debug\SemanticalAnalyzer.csproj.GenerateResource.cache
 C:\Users\jandr\source\repos\Hydra\obj\Debug\SemanticalAnalyzer.Carga.resources
-C:\Users\jandr\source\repos\Hydra\obj\Debug\SemanticalAnalyzer.csprojAssemblyReference.cache
 C:\Users\jandr\source\repos\Hydra\bin\Debug\Hydra Compiler.exe.config
 C:\Users\jandr\source\repos\Hydra\bin\Debug\Hydra Compiler.exe
 C:\Users\jandr\source\repos\Hydra\bin\Debug\Hydra Compiler.pdb
 C:\Users\jandr\source\repos\Hydra\obj\Debug\Hydra Compiler.exe
 C:\Users\jandr\source\repos\Hydra\obj\Debug\Hydra Compiler.pdb
+C:\Users\jandr\source\repos\Hydra\obj\Debug\SemanticalAnalyzer.csprojAssemblyReference.cache

@@ -1,13 +1,18 @@
-﻿void main(){
+﻿void main() {
+	
+	println(suma);
+
 	int a = 10;
 	int b = 14;
 
-	if(a > 12 & ("Hola" == "hola") & a < 12 | "" != ""){
+	if(10 > 12 & "Hola" == "hola") {
 		int suma = a + b;
-		print("Hola" + suma);
+		println("Resultado: ");
+		println(suma);
 	}
-	else{
+	else {
 		int resta = a - b;
-		print(resta + " - hola");
+		println("Resultado: ");
+		println(resta);
 	}
 }

@@ -7,11 +7,24 @@ using System.Threading.Tasks;
 
 namespace SemanticalAnalyzer.CodeAnalysis
 {
-    class ExpresionRelacional : ExpresionBooleana
+    internal class ExpresionRelacional : Expresion
     {
         public ExpresionRelacional(Expresion izquierda, Token operador, Expresion derecha)
-            : base(izquierda, operador, derecha)
         {
+            this.Izquierda = izquierda;
+            this.Operador = operador;
+            this.Derecha = derecha;
+        }
+        public override TipoSintaxis Tipo { get => TipoSintaxis.ExpresionRelacional; }
+        public Expresion Izquierda { get; }
+        public Token Operador { get; }
+        public Expresion Derecha { get; }
+
+        public override IEnumerable<NodoSintaxis> GetChildren()
+        {
+            yield return Izquierda;
+            yield return Operador;
+            yield return Derecha;
         }
     }
 }

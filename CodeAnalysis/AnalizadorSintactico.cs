@@ -1,4 +1,5 @@
 using SemanticalAnalyzer.CodeAnalysis;
+using SemanticalAnalyzer.CodeAnalysis.Expresiones;
 using SemanticalAnalyzer.CodeAnalysis.Expresiones_Individuales;
 using System;
 using System.Collections.Generic;
@@ -202,7 +203,6 @@ namespace ExpressionEvaluator.CodeAnalysis
                         expresiones.Add(AnalizarExpresionElse());
                     }
                 }
-                // TODO Programar analisis semantico funcion println();
                 else if (TokenActual.Tipo == TipoSintaxis.TokenPrintln)
                 {
                     expresiones.Add(AnalizarFuncionPrintln());
@@ -241,9 +241,31 @@ namespace ExpressionEvaluator.CodeAnalysis
                 case TipoSintaxis.TokenBool:
                     expresion = AnalizarExpresionBooleana();
                     break;
+                case TipoSintaxis.Identificador:
+                    expresion = null;
+
+                    if (!TablaSimbolos.ContainsKey(token.Value.ToString()))
+                    {
+                        _diagnostics.Add($"Identificador <{token.Text.ToString()}> no encontrado.");
+                        expresion = new ExpresionPrintlnInvalida(token);
+                    }
+                    else
+                    {
+                        var simbolo = TablaSimbolos[token.Value.ToString()] as Token;
+
+                        switch (simbolo.Tipo)
+                        {
+                            case TipoSintaxis.TokenInteger:
+                            case TipoSintaxis.TokenDecimal:
+                            case TipoSintaxis.TokenString:
+                                expresion = new ExpresionIdentificador(new Token(TipoSintaxis.Identificador, 0, simbolo.Value.ToString(), simbolo.Value.ToString()));
+                                break;
+                        }
+                    }
+
+                    break;
                 default:
                     expresion = new ExpresionInvalida(token);
-                    return expresion;
                     break;
             }
 

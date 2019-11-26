@@ -11,7 +11,7 @@ namespace ExpressionEvaluator.CodeAnalysis
             this.Operador = operador;
             this.Derecha = derecha;
         }
-        public override TipoSintaxis Tipo { get => TipoSintaxis.ExpresionBool; }
+        public override TipoSintaxis Tipo { get => TipoSintaxis.ExpresionBooleana; }
         public Expresion Izquierda { get; }
         public Token Operador { get; }
         public Expresion Derecha { get; }

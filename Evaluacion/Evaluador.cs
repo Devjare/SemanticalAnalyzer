@@ -62,96 +62,40 @@ namespace ExpressionEvaluator.CodeAnalysis
                 
                 if (expresion is ExpresionMain expMain)
                 {
-                    var resultado = EvaluarFuncionMain(expresion);
+                    var resultado = EvaluarBloqueCodigo(expMain.Sentencias.ListaExpresiones);
                     if (resultado == false)
                     {
-                        // TODO Fracaso la evaluacion
-
-                    }
-                    else
-                    {
-                        // TDOO Evaluacion Exitosa
+                        return Diagnostico;
                     }
                 }
             }
-           
-            // Generate Symbols table
-            var tablaSimbolosSintactica = TablaSintaxis = parser.TablaSimbolos;
 
-            // Evaluacion de expresiones en asignaciones.
-            foreach (var registro in tablaSimbolosSintactica)
-            {
-                var token = (Token)registro.Value;
-                if (token.Tipo == TipoSintaxis.TokenInteger ||
-                token.Tipo == TipoSintaxis.LongKeyword ||
-                token.Tipo == TipoSintaxis.TokenDecimal ||
-                token.Tipo == TipoSintaxis.DoubleKeyword)
-                {
-                    if (token.Value is ExpresionNumericaInvalida)
-                    {
-                        continue;
-                    }
+            //// Evaluacion de expresiones en llamadas a println()
+            //var listaExpresionesImpresion = parser.Salida;
 
-                    try
-                    {
-                        var result = EvaluarExpresionAritmetica((Expresion)token.Value);
-                        if ((result as Token).Tipo == TipoSintaxis.TokenInvalido)
-                        {
-                            continue;
-                        }
-                        // Si existe ya ese identificador, marcar error en cualquier caso invalido.
-                        this.TablaSimbolos[registro.Key] = result;
-                    }
-                    catch (Exception ex)
-                    {
+            //foreach (var expresion in listaExpresionesImpresion)
+            //{
+            //    if (expresion is ExpresionString expStr)
+            //    {
+            //        var resultado = EvaluarExpresionString(expStr);
+            //        Salida.Add(resultado.Value.ToString());
+            //    }
 
-                    }
-                }
-                //else if (token.Tipo == TipoSintaxis.BoolKeyword)
-                //{
-                //    var result = EvaluarExpresionLogica((Expresion)token.Value);
-                //    this.TablaSimbolos[registro.Key] = result;
-                //}
-                else if (token.Tipo == TipoSintaxis.StringKeyword)
-                {
-                    if (token.Value is ExpresionStringInvalida)
-                    {
-                        continue;
-                    }
-                    var result = EvaluarExpresionString(token.Value as Expresion);
-                    this.TablaSimbolos[registro.Key] = result;
-                }
-
-            }
-
-            // TODO Evaluacion de expresiones en estructuras if y while.
-
-            // Evaluacion de expresiones en llamadas a println()
-            var listaExpresionesImpresion = parser.Salida;
-
-            foreach (var expresion in listaExpresionesImpresion)
-            {
-                if (expresion is ExpresionString expStr)
-                {
-                    var resultado = EvaluarExpresionString(expStr);
-                    Salida.Add(resultado.Value.ToString());
-                }
-
-                if (expresion is ExpresionBinaria expBin)
-                {
-                    var izq = expBin.Izquierda;
-                    if (izq != null && izq is ExpresionString)
-                    {
-                        var resultado = EvaluarExpresionString(expBin);
-                        Salida.Add(resultado.Value.ToString());
-                    }
-                    else if (izq != null && (izq is ExpresionEntera || izq is ExpresionDecimal))
-                    {
-                        var resultado = EvaluarExpresionAritmetica(expBin);
-                        Salida.Add(resultado.Value.ToString());
-                    }
-                }
-            }
+            //    if (expresion is ExpresionBinaria expBin)
+            //    {
+            //        var izq = expBin.Izquierda;
+            //        if (izq != null && izq is ExpresionString)
+            //        {
+            //            var resultado = EvaluarExpresionString(expBin);
+            //            Salida.Add(resultado.Value.ToString());
+            //        }
+            //        else if (izq != null && (izq is ExpresionEntera || izq is ExpresionDecimal))
+            //        {
+            //            var resultado = EvaluarExpresionAritmetica(expBin);
+            //            Salida.Add(resultado.Value.ToString());
+            //        }
+            //    }
+            //}
 
             stopwatch.Stop();
             SintaxTimeTaken = stopwatch.ElapsedMilliseconds;
@@ -163,7 +107,14 @@ namespace ExpressionEvaluator.CodeAnalysis
         {
 
             var listaExpresionesMain = expresionMain as ExpresionMain;
-            foreach (var expresion in listaExpresionesMain.Expresiones)
+            
+
+            return true;
+        }
+
+        private bool EvaluarBloqueCodigo(List<Expresion> expresiones)
+        {
+            foreach (var expresion in expresiones)
             {
                 if (expresion is ExplresionDeclaracion declaracion)
                 {
@@ -200,13 +151,356 @@ namespace ExpressionEvaluator.CodeAnalysis
                             break;
                     }
                 }
-                else if(expresion is ExpresionFuncionPrintln println)
+                else if (expresion is ExpresionIf ifExpr)
+                {
+                    var exp = ifExpr.Expresion;
+                    Token result = null;
+                    if (exp is ExpresionBooleana expBool)
+                    {
+                        result = EvaluarExpresionBoolean(expBool);
+                        TablaResultados[$"if({ContadorIfs++})"] = result;
+                    }
+                    else if (exp is ExpresionRelacional expRel)
+                    {
+                        result = EvaluarExpresionRelacional(expRel);
+                        TablaResultados[$"if({ContadorIfs++})"] = result;
+                    }
+                    else if (exp is ExpresionLogica exprLogica)
+                    {
+                        result = new Token(TipoSintaxis.ExpresionLogica, -1, exprLogica.Value.ToString(), exprLogica.Value.ToString());
+                        TablaResultados[$"if({ContadorIfs++})"] = result;
+                    }
+
+                    if (Boolean.Parse(result.Value.ToString()) == true)
+                    {
+                        bool ejecuccionExitosa = EvaluarBloqueCodigo(ifExpr.Sentencias.ListaExpresiones);
+                    }
+                    else
+                    {
+                        // Condicion if fallida
+                        // TODO finzalizar ejecucion.
+                    }
+
+                }
+                else if (expresion is ExpresionElse elseExpr)
                 {
 
+                }
+                else if (expresion is ExpresionFuncionPrintln printlnExpr)
+                {
+                    var exp = printlnExpr.Expresion;
+
+                    Token resultadoExp = null;
+
+                    switch (exp.Tipo)
+                    {
+                        case TipoSintaxis.ExpresionDecimal:
+                        case TipoSintaxis.ExpresionEntera:
+
+                            resultadoExp = EvaluarExpresionAritmetica(exp);
+
+                            break;
+                        case TipoSintaxis.ExpresionStirng:
+
+                            resultadoExp = EvaluarExpresionString(exp);
+
+                            break;
+                        case TipoSintaxis.ExpresionBinaria:
+
+                            var izq = (exp as ExpresionBinaria).Izquierda;
+
+                            if (izq is ExpresionString) resultadoExp = EvaluarExpresionString(exp);
+                            else resultadoExp = EvaluarExpresionAritmetica(exp);
+
+                            break;
+                    }
+
+                    Salida.Add(resultadoExp.Value.ToString());
                 }
             }
 
             return true;
+        }
+
+        private Token EvaluarExpresionBoolean(Expresion expresion)
+        {
+            var expresionBooleana = expresion as ExpresionBooleana;
+            
+            Token resultado = null;
+
+            var izq = expresionBooleana.Izquierda;
+            Token resIzq = null;
+
+            switch (izq.Tipo)
+            {
+                case TipoSintaxis.ExpresionLogica:
+                    var resToken = izq as ExpresionLogica;
+                    resIzq = new Token(TipoSintaxis.ExpresionLogica, -1, resToken.Value.ToString(), resToken.Value.ToString());
+                    break;
+                case TipoSintaxis.ExpresionRelacional:
+                    resIzq = EvaluarExpresionRelacional(izq);
+                    break;
+                case TipoSintaxis.ExpresionBooleana:
+                    resIzq = EvaluarExpresionBoolean(izq);
+                    break;
+            }
+
+            var der = expresionBooleana.Derecha;
+            Token resDer = null;
+
+            switch (der.Tipo)
+            {
+                case TipoSintaxis.ExpresionLogica:
+                    var resToken = izq as ExpresionLogica;
+                    resDer = new Token(TipoSintaxis.ExpresionLogica, -1, resToken.Value.ToString(), resToken.Value.ToString());
+                    break;
+                case TipoSintaxis.ExpresionRelacional:
+                    resDer = EvaluarExpresionRelacional(der);
+                    break;
+                case TipoSintaxis.ExpresionBooleana:
+                    resDer = EvaluarExpresionBoolean(der);
+                    break;
+            }
+
+            var operador = expresionBooleana.Operador;
+
+            bool resIzqBool, resDerBool, boolRes;
+
+            switch (operador.Tipo)
+            {
+                case TipoSintaxis.TokenAnd:
+
+                    resIzqBool = Boolean.Parse(resIzq.Value.ToString());
+                    resDerBool = Boolean.Parse(resDer.Value.ToString());
+
+                    
+                    boolRes = resIzqBool && resDerBool;
+
+                    resultado = new Token(TipoSintaxis.ExpresionLogica, -1, boolRes.ToString(), boolRes.ToString());
+
+                    break;
+                case TipoSintaxis.TokenOr:
+
+                    resIzqBool = Boolean.Parse(resIzq.Value.ToString());
+                    resDerBool = Boolean.Parse(resDer.Value.ToString());
+
+                    boolRes = resIzqBool || resDerBool;
+
+                    resultado = new Token(TipoSintaxis.ExpresionLogica, -1, boolRes.ToString(), boolRes.ToString());
+
+                    break;
+            }
+
+            return resultado;
+        }
+
+        private Token EvaluarExpresionRelacional(Expresion expresion)
+        {
+            var expresionRelacional = expresion as ExpresionRelacional;
+
+            Token resultado = null;
+
+            var izq = expresionRelacional.Izquierda;
+            Token resIzq = null;
+
+            switch (izq.Tipo)
+            {
+                case TipoSintaxis.ExpresionEntera:
+                    resIzq = (izq as ExpresionEntera).Numero;
+                    break;
+                case TipoSintaxis.ExpresionDecimal:
+                    resIzq = (izq as ExpresionDecimal).Numero;
+                    break;
+                case TipoSintaxis.ExpresionStirng:
+                    resIzq = (izq as ExpresionString).Valor;
+                    break;
+                case TipoSintaxis.ExpresionIdentificador:
+                    resIzq = (izq as ExpresionIdentificador).Identificador;
+                    break;
+                case TipoSintaxis.ExpresionLogica:
+                    resIzq = (izq as ExpresionLogica).Value;
+                    // resIzq = new Token(TipoSintaxis.ExpresionLogica, -1, resToken.Value.ToString(), resToken.Value.ToString());
+                    break;
+                case TipoSintaxis.ExpresionRelacional:
+                    resIzq = EvaluarExpresionRelacional(izq);
+                    break;
+                case TipoSintaxis.ExpresionBooleana:
+                    resIzq = EvaluarExpresionBoolean(izq);
+                    break;
+            }
+
+            var der = expresionRelacional.Derecha;
+            Token resDer = null;
+
+            switch (der.Tipo)
+            {
+                case TipoSintaxis.ExpresionEntera:
+                    resDer = (izq as ExpresionEntera).Numero;
+                    break;
+                case TipoSintaxis.ExpresionDecimal:
+                    resDer = (izq as ExpresionDecimal).Numero;
+                    break;
+                case TipoSintaxis.ExpresionStirng:
+                    resDer = (izq as ExpresionString).Valor;
+                    break;
+                case TipoSintaxis.ExpresionIdentificador:
+                    resDer = (izq as ExpresionIdentificador).Identificador;
+                    break;
+                case TipoSintaxis.ExpresionLogica:
+                    resDer = (izq as ExpresionLogica).Value;
+                    // resIzq = new Token(TipoSintaxis.ExpresionLogica, -1, resToken.Value.ToString(), resToken.Value.ToString());
+                    break;
+                case TipoSintaxis.ExpresionRelacional:
+                    resDer = EvaluarExpresionRelacional(der);
+                    break;
+                case TipoSintaxis.ExpresionBooleana:
+                    resDer = EvaluarExpresionBoolean(der);
+                    break;
+            }
+
+            var operador = expresionRelacional.Operador;
+
+            bool boolRes = false;
+
+            switch (operador.Tipo)
+            {
+
+                // TODO Poner case en orden de precedencia de los op relacionales.
+                case TipoSintaxis.TokenMenorQue:
+
+                    if (izq.Tipo == TipoSintaxis.ExpresionEntera && der.Tipo == TipoSintaxis.ExpresionEntera)
+                    {
+                        boolRes = Int32.Parse((izq as ExpresionEntera).Numero.Value.ToString()) < Int32.Parse((der as ExpresionEntera).Numero.Value.ToString());
+                    }
+                    else if (izq.Tipo == TipoSintaxis.ExpresionEntera && der.Tipo == TipoSintaxis.ExpresionDecimal)
+                    {
+                        boolRes = Int32.Parse((izq as ExpresionEntera).Numero.Value.ToString()) < Double.Parse((der as ExpresionDecimal).Numero.Value.ToString());
+                    }
+                    else if (izq.Tipo == TipoSintaxis.ExpresionDecimal && der.Tipo == TipoSintaxis.ExpresionDecimal)
+                    {
+                        boolRes = Int32.Parse((izq as ExpresionDecimal).Numero.Value.ToString()) < Int32.Parse((der as ExpresionEntera).Numero.Value.ToString());
+                    }
+                    else if (izq.Tipo == TipoSintaxis.ExpresionDecimal && der.Tipo == TipoSintaxis.ExpresionEntera)
+                    {
+                        boolRes = Int32.Parse((izq as ExpresionDecimal).Numero.Value.ToString()) < Int32.Parse((der as ExpresionDecimal).Numero.Value.ToString());
+                    }
+
+                    resultado = new Token(TipoSintaxis.ExpresionLogica, -1, boolRes.ToString(), boolRes.ToString());
+
+                    break;
+                case TipoSintaxis.TokenMenorIgualQue:
+
+                    if (izq.Tipo == TipoSintaxis.ExpresionEntera && der.Tipo == TipoSintaxis.ExpresionEntera)
+                    {
+                        boolRes = Int32.Parse((izq as ExpresionEntera).Numero.Value.ToString()) <= Int32.Parse((der as ExpresionEntera).Numero.Value.ToString());
+                    }
+                    else if (izq.Tipo == TipoSintaxis.ExpresionEntera && der.Tipo == TipoSintaxis.ExpresionDecimal)
+                    {
+                        boolRes = Int32.Parse((izq as ExpresionEntera).Numero.Value.ToString()) <= Double.Parse((der as ExpresionDecimal).Numero.Value.ToString());
+                    }
+                    else if (izq.Tipo == TipoSintaxis.ExpresionDecimal && der.Tipo == TipoSintaxis.ExpresionDecimal)
+                    {
+                        boolRes = Int32.Parse((izq as ExpresionDecimal).Numero.Value.ToString()) <= Int32.Parse((der as ExpresionEntera).Numero.Value.ToString());
+                    }
+                    else if (izq.Tipo == TipoSintaxis.ExpresionDecimal && der.Tipo == TipoSintaxis.ExpresionEntera)
+                    {
+                        boolRes = Int32.Parse((izq as ExpresionDecimal).Numero.Value.ToString()) <= Int32.Parse((der as ExpresionDecimal).Numero.Value.ToString());
+                    }
+
+                    resultado = new Token(TipoSintaxis.ExpresionLogica, -1, boolRes.ToString(), boolRes.ToString());
+
+                    break;
+                case TipoSintaxis.TokenMayorQue:
+
+                    if (izq.Tipo == TipoSintaxis.ExpresionEntera && der.Tipo == TipoSintaxis.ExpresionEntera)
+                    {
+                        boolRes = Int32.Parse((izq as ExpresionEntera).Numero.Value.ToString()) > Int32.Parse((der as ExpresionEntera).Numero.Value.ToString());
+                    }
+                    else if(izq.Tipo == TipoSintaxis.ExpresionEntera && der.Tipo == TipoSintaxis.ExpresionDecimal)
+                    {
+                        boolRes = Int32.Parse((izq as ExpresionEntera).Numero.Value.ToString()) > Double.Parse((der as ExpresionDecimal).Numero.Value.ToString());
+                    }
+                    else if(izq.Tipo == TipoSintaxis.ExpresionDecimal && der.Tipo == TipoSintaxis.ExpresionDecimal)
+                    {
+                        boolRes = Int32.Parse((izq as ExpresionDecimal).Numero.Value.ToString()) > Int32.Parse((der as ExpresionEntera).Numero.Value.ToString());
+                    }
+                    else if(izq.Tipo == TipoSintaxis.ExpresionDecimal && der.Tipo == TipoSintaxis.ExpresionEntera)
+                    {
+                        boolRes = Int32.Parse((izq as ExpresionDecimal).Numero.Value.ToString()) > Int32.Parse((der as ExpresionDecimal).Numero.Value.ToString());
+                    }
+
+                    resultado = new Token(TipoSintaxis.ExpresionLogica, -1, boolRes.ToString(), boolRes.ToString());
+
+                    break;
+                case TipoSintaxis.TokenMayorIgualQue:
+
+                    if (izq.Tipo == TipoSintaxis.ExpresionEntera && der.Tipo == TipoSintaxis.ExpresionEntera)
+                    {
+                        boolRes = Int32.Parse((izq as ExpresionEntera).Numero.Value.ToString()) >= Int32.Parse((der as ExpresionEntera).Numero.Value.ToString());
+                    }
+                    else if (izq.Tipo == TipoSintaxis.ExpresionEntera && der.Tipo == TipoSintaxis.ExpresionDecimal)
+                    {
+                        boolRes = Int32.Parse((izq as ExpresionEntera).Numero.Value.ToString()) >= Double.Parse((der as ExpresionDecimal).Numero.Value.ToString());
+                    }
+                    else if (izq.Tipo == TipoSintaxis.ExpresionDecimal && der.Tipo == TipoSintaxis.ExpresionDecimal)
+                    {
+                        boolRes = Int32.Parse((izq as ExpresionDecimal).Numero.Value.ToString()) >= Int32.Parse((der as ExpresionEntera).Numero.Value.ToString());
+                    }
+                    else if (izq.Tipo == TipoSintaxis.ExpresionDecimal && der.Tipo == TipoSintaxis.ExpresionEntera)
+                    {
+                        boolRes = Int32.Parse((izq as ExpresionDecimal).Numero.Value.ToString()) >= Int32.Parse((der as ExpresionDecimal).Numero.Value.ToString());
+                    }
+
+                    resultado = new Token(TipoSintaxis.ExpresionLogica, -1, boolRes.ToString(), boolRes.ToString());
+
+                    break;
+                case TipoSintaxis.TokenIgualIgual:
+
+                    if (izq.Tipo == TipoSintaxis.ExpresionEntera && der.Tipo == TipoSintaxis.ExpresionEntera)
+                    {
+                        boolRes = Int32.Parse((izq as ExpresionEntera).Numero.Value.ToString()) == Int32.Parse((der as ExpresionEntera).Numero.Value.ToString());
+                    }
+                    else if (izq.Tipo == TipoSintaxis.ExpresionEntera && der.Tipo == TipoSintaxis.ExpresionDecimal)
+                    {
+                        boolRes = Int32.Parse((izq as ExpresionEntera).Numero.Value.ToString()) == Double.Parse((der as ExpresionDecimal).Numero.Value.ToString());
+                    }
+                    else if (izq.Tipo == TipoSintaxis.ExpresionDecimal && der.Tipo == TipoSintaxis.ExpresionDecimal)
+                    {
+                        boolRes = Int32.Parse((izq as ExpresionDecimal).Numero.Value.ToString()) == Int32.Parse((der as ExpresionEntera).Numero.Value.ToString());
+                    }
+                    else if (izq.Tipo == TipoSintaxis.ExpresionDecimal && der.Tipo == TipoSintaxis.ExpresionEntera)
+                    {
+                        boolRes = Int32.Parse((izq as ExpresionDecimal).Numero.Value.ToString()) == Int32.Parse((der as ExpresionDecimal).Numero.Value.ToString());
+                    }
+
+                    resultado = new Token(TipoSintaxis.ExpresionLogica, -1, boolRes.ToString(), boolRes.ToString());
+
+                    break;
+                case TipoSintaxis.TokenNotIgual:
+
+                    if (izq.Tipo == TipoSintaxis.ExpresionEntera && der.Tipo == TipoSintaxis.ExpresionEntera)
+                    {
+                        boolRes = Int32.Parse((izq as ExpresionEntera).Numero.Value.ToString()) != Int32.Parse((der as ExpresionEntera).Numero.Value.ToString());
+                    }
+                    else if (izq.Tipo == TipoSintaxis.ExpresionEntera && der.Tipo == TipoSintaxis.ExpresionDecimal)
+                    {
+                        boolRes = Int32.Parse((izq as ExpresionEntera).Numero.Value.ToString()) != Double.Parse((der as ExpresionDecimal).Numero.Value.ToString());
+                    }
+                    else if (izq.Tipo == TipoSintaxis.ExpresionDecimal && der.Tipo == TipoSintaxis.ExpresionDecimal)
+                    {
+                        boolRes = Int32.Parse((izq as ExpresionDecimal).Numero.Value.ToString()) != Int32.Parse((der as ExpresionEntera).Numero.Value.ToString());
+                    }
+                    else if (izq.Tipo == TipoSintaxis.ExpresionDecimal && der.Tipo == TipoSintaxis.ExpresionEntera)
+                    {
+                        boolRes = Int32.Parse((izq as ExpresionDecimal).Numero.Value.ToString()) != Int32.Parse((der as ExpresionDecimal).Numero.Value.ToString());
+                    }
+
+                    resultado = new Token(TipoSintaxis.ExpresionLogica, -1, boolRes.ToString(), boolRes.ToString());
+
+                    break;
+            }
+
+            return resultado;
         }
 
         public Token EvaluarExpresionBinaria(Expresion expresion)
@@ -542,74 +836,5 @@ namespace ExpressionEvaluator.CodeAnalysis
             throw new Exception($"Nodo inesperado {nodo.Tipo}");
         }
 
-        //private bool EvaluarExpresionLogica(Expresion nodo)
-        //{
-        //    if (nodo is ExpresionLogica n)
-        //        return Boolean.Parse(n.token.Value.ToString());
-
-        //    if (nodo is ExpresionRelacional relExp)
-        //    {
-        //        var izq = relExp.Izquierda;
-        //        var der = relExp.Derecha;
-
-        //        if (izq.Tipo == TipoSintaxis.ExpresionIdentificador)
-        //        {
-        //            var expIdent = izq as ExpresionIdentificador;
-        //            var identificador = izq;
-        //            var tokenString = (TablaSimbolos[identificador.Value.ToString()] as Token).Value;
-
-        //            if (!TablaSimbolos.ContainsKey(identificador.Value.ToString()))
-        //            {
-        //                Diagnostico.Add($"ERROR: Variable no declarada <{identificador}>");
-        //            }
-        //            else if (!(tokenString is null))
-        //            {
-        //                return new Token(TipoSintaxis.TokenString, 0, tokenString.ToString(), tokenString.ToString());
-        //            }
-        //        }
-
-        //        if (relExp.Tipo == TipoSintaxis.ExpresionEntera)
-        //        {
-
-        //        }
-        //        if (relExp.Tipo == TipoSintaxis.ExpresionDecimal)
-        //        {
-
-        //        }
-        //        if (relExp.Tipo == TipoSintaxis.ExpresionStirng)
-        //        {
-
-        //        }
-        //        if (relExp.Tipo == TipoSintaxis.ExpresionLogica)
-        //        {
-
-        //        }
-        //        {
-        //            // 
-        //        }
-        //    }
-
-        //    if (nodo is ExpresionBooleana b)
-        //    {
-        //        var izquierda = EvaluarExpresionLogica(b.Izquierda);
-        //        var derecha = EvaluarExpresionLogica(b.Derecha);
-
-        //        if (b.Operador.Tipo == TipoSintaxis.TokenAnd)
-        //            return izquierda && derecha;
-        //        else if (b.Operador.Tipo == TipoSintaxis.TokenOr)
-        //            return izquierda || derecha;
-        //        else if (b.Operador.Tipo == TipoSintaxis.TokenIgualIgual)
-        //            return izquierda == derecha;
-        //        else if (b.Operador.Tipo == TipoSintaxis.TokenNotIgual)
-        //            return izquierda != derecha;
-        //        else
-        //            throw new Exception($"Operador binario inesperado: {b.Operador.Tipo}");
-        //    }
-
-        //    if (nodo is ExpresionEnParentesis p)
-        //        return EvaluarExpresionLogica(p.Expresion);
-
-        //    throw new Exception($"Nodo inesperado {nodo.Tipo}");
-        //}
     }
 }

@@ -9,11 +9,11 @@ namespace SemanticalAnalyzer.CodeAnalysis.Expresiones_Individuales
 {
     class ExpresionIndividual : Expresion
     {
-        public ExpresionIndividual(Token token)
+        public ExpresionIndividual(Token value)
         {
-            this.token = token;
+            this.Value = value;
         }
-        public Token token { get; set; }
+        public Token Value { get; set; }
         public override TipoSintaxis Tipo => throw new NotImplementedException();
 
         public override IEnumerable<NodoSintaxis> GetChildren()
