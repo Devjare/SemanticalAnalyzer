@@ -13,7 +13,7 @@ namespace SemanticalAnalyzer.CodeAnalysis
         {
             Sentencias = new Sentencias(expresiones);
         }
-        public override TipoSintaxis Tipo => throw new NotImplementedException();
+        public override TipoSintaxis Tipo => TipoSintaxis.ExpresionBloqueCodigo;
         public Sentencias Sentencias { get; set; }
 
         public override IEnumerable<NodoSintaxis> GetChildren()

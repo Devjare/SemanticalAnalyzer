@@ -50,6 +50,9 @@ namespace SemanticalAnalyzer
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
+
+                richTextBox1.Clear();
+
                 var path = dialog.FileName;
                 filesTabControl.TabPages[0].Text = dialog.FileName;
 
@@ -80,12 +83,14 @@ namespace SemanticalAnalyzer
         Dictionary<String, Object> SymbolsTable { get; set; }
         private void BtnCompile_Click(object sender, EventArgs e)
         {
+            txtLog.Clear();
+            txtOutput.Clear();
             Compile();
         }
 
         private void Compile()
         {
-            txtLog.Clear();
+
             var evaluator = new Evaluador();
 
             var stopwatch = new Stopwatch();
@@ -96,29 +101,31 @@ namespace SemanticalAnalyzer
             stopwatch.Stop();
             var secondsElapsed = stopwatch.ElapsedMilliseconds;
 
-            MessageBox.Show($"Tiempo total Compilacion: {secondsElapsed}ms, \n\r" +
-                $"Tiempo Analisis Lexico: {evaluator.LexTimeTaken}ms \n\r" +
-                $"Tiempo Analisis Sintactico: {evaluator.SintaxTimeTaken}ms \n\r");
+            //MessageBox.Show($"Tiempo total Compilacion: {secondsElapsed}ms, \n\r" +
+            //    $"Tiempo Analisis Lexico: {evaluator.LexTimeTaken}ms \n\r" +
+            //    $"Tiempo Analisis Sintactico: {evaluator.SintaxTimeTaken}ms \n\r");
 
-            this.SymbolsTable = evaluator.TablaSimbolos;
-            foreach (var diagnostic in diagnostics)
+            this.SymbolsTable = evaluator.TablaResultados;
+
+            if (evaluator.Diagnostico.Count > 1)
             {
-                txtLog.Text += diagnostic + Environment.NewLine;
+                foreach (var diag in evaluator.Diagnostico)
+                {
+                    txtLog.Text += $"{diag}{Environment.NewLine}";
+                }
+                MessageBox.Show("Errores de compilacion, por favor revise el log.");
+                return;
             }
-            ShowSymbolsTable();
-            if (evaluator.Salida.Count > 0)
+            else
             {
                 MostrarResultadosImpresiones(evaluator.Salida);
+                ShowSymbolsTable();
             }
-            var presentadorCuadruplos = new PersentadorCuadruplos(evaluator.TablaSintaxis);
-            MostrarTablaCuadruplos(presentadorCuadruplos.Procesar());
         }
 
         private void MostrarResultadosImpresiones(List<string> salida)
         {
             tcLogOutput.SelectedTab = tcLogOutput.TabPages[1];
-
-            txtOutput.Clear();
 
             salida.ForEach(item => 
             {
@@ -205,7 +212,6 @@ namespace SemanticalAnalyzer
 
         private void ShowSymbolsTable()
         {
-            String data = "";
 
             if (SymbolsTable == null)
             {
@@ -266,12 +272,13 @@ namespace SemanticalAnalyzer
         }
         private void button4_Click(object sender, EventArgs e)
         {
-            Compile();
+             Compile();
         }
         private void button1_Click(object sender, EventArgs e)
         {
             try
             {
+                richTextBox1.Clear();
                 OpenNewFile();
             }
             catch (Exception ex)

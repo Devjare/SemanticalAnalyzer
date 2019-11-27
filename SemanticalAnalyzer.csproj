@@ -118,10 +118,13 @@
     </Compile>
     <None Include="HydraSamples\forloop.hyd" />
     <None Include="HydraSamples\FuncionAddition.hyd" />
+    <None Include="HydraSamples\IfElseCompuesto.hyd" />
     <None Include="HydraSamples\IfelseSimple.hyd" />
     <None Include="HydraSamples\HolaMundo.hyd" />
+    <None Include="HydraSamples\MayorQue.hyd" />
     <None Include="HydraSamples\readAndCompare.hyd" />
     <None Include="HydraSamples\readFromKeyboard.hyd" />
+    <None Include="HydraSamples\SumaMayor.hyd" />
     <None Include="HydraSamples\TextFile1.hyd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

@@ -256,9 +256,16 @@ namespace ExpressionEvaluator.CodeAnalysis
                         switch (simbolo.Tipo)
                         {
                             case TipoSintaxis.TokenInteger:
+                                expresion = AnalizarExpresionAritmetica(token, new Token(TipoSintaxis.IntegerKeyword, 0, "int", "int"));
+                                break;
                             case TipoSintaxis.TokenDecimal:
+                                expresion = AnalizarExpresionAritmetica(token, new Token(TipoSintaxis.FloatKeyword, 0, "float", "float"));
+                                break;
                             case TipoSintaxis.TokenString:
-                                expresion = new ExpresionIdentificador(new Token(TipoSintaxis.Identificador, 0, simbolo.Value.ToString(), simbolo.Value.ToString()));
+                                expresion = AnalizarExpresionString(token);
+                                break;
+                            case TipoSintaxis.TokenBool:
+                                expresion = AnalizarExpresionBooleana();
                                 break;
                         }
                     }

@@ -79,7 +79,8 @@ namespace ExpressionEvaluator.CodeAnalysis
         TokenPrintln,
         ExpresionFuncionPrintln,
         ExpresionRelacional,
-        ExpresionPrintlnInvalida
+        ExpresionPrintlnInvalida,
+        ExpresionBloqueCodigo
     }
 
 }
