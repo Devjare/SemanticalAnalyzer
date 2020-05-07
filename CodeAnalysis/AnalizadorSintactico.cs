@@ -28,9 +28,9 @@ namespace ExpressionEvaluator.CodeAnalysis
             var tokens = new List<Token>();
 
             var stopwatch = new Stopwatch();
+            stopwatch.Start();
             var lexer = new AnalizadorLexico(text);
             Token token;
-            stopwatch.Start();
             do
             {
                 token = lexer.SiguienteToken();
@@ -173,7 +173,7 @@ namespace ExpressionEvaluator.CodeAnalysis
             return new ExpresionMain(parentesisApertura, parentesisCierre, llaveApertura, expresion.Sentencias.ListaExpresiones, llaveCierre);
         }
 
-        // Analizar bloque, analizar· cualquier estructura dentro de llaves, 
+        // Analizar bloque, analizar√° cualquier estructura dentro de llaves, 
         // ya sea funciones, estrucutras condicionales o ciclicas.
         private Expresion AnalizarBloque()
         {
